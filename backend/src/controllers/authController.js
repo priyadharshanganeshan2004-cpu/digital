@@ -8,7 +8,21 @@ const crypto = require('crypto');
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password, phone, company } = req.body;
+    const name = req.body.name?.trim();
+    const email = req.body.email?.trim().toLowerCase();
+    const password = req.body.password;
+    const phone = req.body.phone?.trim();
+    const company = req.body.company?.trim();
+
+    if (!name || !email || !password) {
+        res.status(400);
+        throw new Error('Name, email, and password are required');
+    }
+
+    if (password.length < 6) {
+        res.status(400);
+        throw new Error('Password must be at least 6 characters');
+    }
 
     const userExists = await User.findOne({ email });
     if (userExists) {

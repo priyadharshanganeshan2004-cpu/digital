@@ -43,8 +43,9 @@ export default function RegisterPage() {
             setError('');
             await registerUser(data.name, data.email, data.password);
             navigate('/dashboard');
-        } catch {
-            setError('Registration failed. Please try again.');
+        } catch (err: any) {
+            const backendMessage = err?.response?.data?.message || err?.message;
+            setError(backendMessage || 'Registration failed. Please try again.');
         }
     };
 
