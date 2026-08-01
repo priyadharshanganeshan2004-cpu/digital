@@ -1,102 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { HiSearch, HiClock, HiUser, HiArrowRight, HiHeart } from 'react-icons/hi';
 import SectionHeading from '@/components/ui/SectionHeading';
 import SEOHead from '@/components/ui/SEOHead';
+import api from '@/lib/api';
 
 const categories = ['All', 'SEO', 'Marketing', 'Design', 'Development', 'Social Media', 'Branding'];
 
-const blogPosts = [
-    {
-        id: '1',
-        slug: 'seo-strategies-2024',
-        title: '10 SEO Strategies That Will Dominate in 2024',
-        excerpt: 'Stay ahead of the competition with these proven SEO strategies that leverage AI, voice search, and user experience signals.',
-        category: 'SEO',
-        author: 'Alex Morgan',
-        authorInitials: 'AM',
-        date: 'Jan 15, 2024',
-        readTime: 8,
-        likes: 124,
-        color: 'from-blue-500 to-indigo-600',
-    },
-    {
-        id: '2',
-        slug: 'social-media-trends',
-        title: 'Social Media Trends: What\'s Working Now',
-        excerpt: 'Discover the social media trends that are driving real engagement and conversions for brands across every industry.',
-        category: 'Social Media',
-        author: 'Sofia Chen',
-        authorInitials: 'SC',
-        date: 'Jan 12, 2024',
-        readTime: 6,
-        likes: 89,
-        color: 'from-pink-500 to-rose-600',
-    },
-    {
-        id: '3',
-        slug: 'web-design-psychology',
-        title: 'The Psychology of Web Design: Colors That Convert',
-        excerpt: 'Learn how color psychology influences buying decisions and how to use it to maximize your website\'s conversion rate.',
-        category: 'Design',
-        author: 'Emma Davis',
-        authorInitials: 'ED',
-        date: 'Jan 10, 2024',
-        readTime: 7,
-        likes: 156,
-        color: 'from-purple-500 to-violet-600',
-    },
-    {
-        id: '4',
-        slug: 'content-marketing-roi',
-        title: 'How to Measure Content Marketing ROI Effectively',
-        excerpt: 'A comprehensive guide to tracking, measuring, and improving the return on your content marketing investments.',
-        category: 'Marketing',
-        author: 'Marcus Williams',
-        authorInitials: 'MW',
-        date: 'Jan 8, 2024',
-        readTime: 10,
-        likes: 67,
-        color: 'from-green-500 to-teal-600',
-    },
-    {
-        id: '5',
-        slug: 'react-performance',
-        title: 'React Performance Optimization: A Complete Guide',
-        excerpt: 'Master React performance with these advanced techniques including lazy loading, memoization, and code splitting.',
-        category: 'Development',
-        author: 'Ryan Patel',
-        authorInitials: 'RP',
-        date: 'Jan 5, 2024',
-        readTime: 12,
-        likes: 203,
-        color: 'from-cyan-500 to-blue-600',
-    },
-    {
-        id: '6',
-        slug: 'brand-identity-guide',
-        title: 'Building a Brand Identity That Stands Out',
-        excerpt: 'A step-by-step guide to creating a memorable brand identity that resonates with your target audience.',
-        category: 'Branding',
-        author: 'Jessica Lee',
-        authorInitials: 'JL',
-        date: 'Jan 3, 2024',
-        readTime: 9,
-        likes: 178,
-        color: 'from-orange-500 to-amber-600',
-    },
-];
-
 export default function BlogPage() {
+    const [blogPosts, setBlogPosts] = useState<any[]>([]);
     const [activeCategory, setActiveCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
+
+    useEffect(() => {
+        const loadBlogPosts = async () => {
+            try {
+                const { data } = await api.get('/cms/blog');
+                setBlogPosts(data.data || []);
+            } catch {
+                setBlogPosts([]);
+            }
+        };
+        loadBlogPosts();
+    }, []);
 
     const filtered = blogPosts
         .filter((post) => activeCategory === 'All' || post.category === activeCategory)
         .filter((post) =>
             post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
+            (post.excerpt || '').toLowerCase().includes(searchQuery.toLowerCase())
         );
 
     return (
@@ -162,7 +95,7 @@ export default function BlogPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filtered.map((post, i) => (
                             <motion.article
-                                key={post.id}
+                                key={post._id || post.slug}
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
@@ -170,7 +103,7 @@ export default function BlogPage() {
                                 className="group bg-white rounded-2xl overflow-hidden border border-gray-100 card-hover"
                             >
                                 <Link to={`/blog/${post.slug}`}>
-                                    <div className={`h-48 bg-gradient-to-br ${post.color} relative`}>
+                                    <div className={`h-48 bg-gradient-to-br ${post.color || 'from-blue-500 to-indigo-600'} relative`}>
                                         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
                                         <div className="absolute inset-0 flex items-center justify-center text-white/30 text-6xl font-heading font-bold">
                                             {post.title.slice(0, 1)}
@@ -187,15 +120,15 @@ export default function BlogPage() {
                                     <div className="flex items-center gap-4 mb-3 text-xs text-dark-400">
                                         <span className="flex items-center gap-1">
                                             <HiUser className="w-3.5 h-3.5" />
-                                            {post.author}
+                                            {post.author || 'NexusDigital Team'}
                                         </span>
                                         <span className="flex items-center gap-1">
                                             <HiClock className="w-3.5 h-3.5" />
-                                            {post.readTime} min read
+                                            {post.readTime || 5} min read
                                         </span>
                                         <span className="flex items-center gap-1">
                                             <HiHeart className="w-3.5 h-3.5" />
-                                            {post.likes}
+                                            {post.likes || 0}
                                         </span>
                                     </div>
 

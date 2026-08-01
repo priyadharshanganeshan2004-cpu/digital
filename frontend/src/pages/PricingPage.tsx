@@ -1,14 +1,29 @@
+import { useEffect, useState } from 'react';
 import SEOHead from '@/components/ui/SEOHead';
 import PricingSection from '@/components/home/PricingSection';
 import CTASection from '@/components/home/CTASection';
 import { motion } from 'framer-motion';
+import api from '@/lib/api';
 
 export default function PricingPage() {
+    const [siteSettings, setSiteSettings] = useState<any>(null);
+
+    useEffect(() => {
+        const loadSettings = async () => {
+            try {
+                const { data } = await api.get('/cms/settings');
+                setSiteSettings(data.data);
+            } catch {
+                setSiteSettings(null);
+            }
+        };
+        loadSettings();
+    }, []);
     return (
         <>
             <SEOHead
-                title="Pricing"
-                description="Transparent pricing plans for every business size. No hidden fees, no contracts."
+                title={siteSettings?.seoTitle ? `Pricing | ${siteSettings.siteName}` : 'Pricing'}
+                description={siteSettings?.seoDescription || 'Transparent pricing plans for every business size. No hidden fees, no contracts.'}
                 canonical="/pricing"
             />
 

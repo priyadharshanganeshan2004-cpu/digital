@@ -1,33 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiSearch, HiExternalLink, HiEye } from 'react-icons/hi';
 import SectionHeading from '@/components/ui/SectionHeading';
 import SEOHead from '@/components/ui/SEOHead';
 import CTASection from '@/components/home/CTASection';
+import api from '@/lib/api';
 
 const categories = ['All', 'Website', 'E-commerce', 'Branding', 'SEO', 'Social Media', 'Mobile App'];
 
-const portfolioItems = [
-    { id: 1, title: 'TechFlow SaaS Platform', category: 'Website', desc: 'Complete redesign and development of a SaaS platform serving 10,000+ users.', color: 'from-blue-500 to-indigo-600', results: ['200% traffic increase', '150% conversion boost'] },
-    { id: 2, title: 'CloudBase E-commerce', category: 'E-commerce', desc: 'Built a scalable online store handling $2M+ in monthly transactions.', color: 'from-purple-500 to-pink-600', results: ['300% revenue growth', '45% lower bounce rate'] },
-    { id: 3, title: 'VivaNova Brand Identity', category: 'Branding', desc: 'Complete brand refresh including logo, guidelines, and marketing collateral.', color: 'from-orange-500 to-red-600', results: ['Brand recognition up 250%', 'Social media growth 400%'] },
-    { id: 4, title: 'DataSync SEO Campaign', category: 'SEO', desc: 'Comprehensive SEO strategy that dominated competitive keywords.', color: 'from-green-500 to-teal-600', results: ['#1 ranking for 15 keywords', 'Organic traffic up 340%'] },
-    { id: 5, title: 'PixelEdge Social Campaign', category: 'Social Media', desc: 'Multi-platform social media strategy reaching 2M+ monthly impressions.', color: 'from-pink-500 to-rose-600', results: ['2M+ monthly impressions', 'Engagement rate up 180%'] },
-    { id: 6, title: 'IronClad Mobile App', category: 'Mobile App', desc: 'Cross-platform mobile app with 50,000+ downloads in first month.', color: 'from-cyan-500 to-blue-600', results: ['50K+ downloads', '4.8★ App Store rating'] },
-    { id: 7, title: 'SkyReach Corporate Site', category: 'Website', desc: 'Enterprise website with custom CMS and multi-language support.', color: 'from-indigo-500 to-purple-600', results: ['60% faster load time', '90% client satisfaction'] },
-    { id: 8, title: 'BlueShift Online Store', category: 'E-commerce', desc: 'High-converting e-commerce platform with AI-powered recommendations.', color: 'from-teal-500 to-emerald-600', results: ['Average order value up 35%', 'Cart abandonment down 40%'] },
-    { id: 9, title: 'NovaTech Brand Launch', category: 'Branding', desc: 'From concept to market: a complete brand strategy for a tech startup.', color: 'from-amber-500 to-orange-600', results: ['Featured in TechCrunch', 'Series A funding secured'] },
-];
-
 export default function PortfolioPage() {
+    const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
     const [activeCategory, setActiveCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
+
+    useEffect(() => {
+        const loadPortfolio = async () => {
+            try {
+                const { data } = await api.get('/cms/portfolio');
+                setPortfolioItems(data.data || []);
+            } catch {
+                setPortfolioItems([]);
+            }
+        };
+        loadPortfolio();
+    }, []);
 
     const filtered = portfolioItems
         .filter((item) => activeCategory === 'All' || item.category === activeCategory)
         .filter((item) =>
             item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.desc.toLowerCase().includes(searchQuery.toLowerCase())
+            (item.description || '').toLowerCase().includes(searchQuery.toLowerCase())
         );
 
     return (
@@ -94,7 +96,7 @@ export default function PortfolioPage() {
                         <AnimatePresence mode="popLayout">
                             {filtered.map((item) => (
                                 <motion.div
-                                    key={item.id}
+                                    key={item._id || item.slug}
                                     layout
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
@@ -128,10 +130,10 @@ export default function PortfolioPage() {
                                             {item.title}
                                         </h3>
                                         <p className="text-dark-500 text-sm leading-relaxed mb-4 line-clamp-2">
-                                            {item.desc}
+                                            {item.description}
                                         </p>
                                         <div className="flex flex-wrap gap-2">
-                                            {item.results.map((result) => (
+                                            {(item.results || []).map((result: string) => (
                                                 <span key={result} className="px-2.5 py-1 rounded-lg bg-primary-50 text-primary-600 text-xs font-medium">
                                                     {result}
                                                 </span>

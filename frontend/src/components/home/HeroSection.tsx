@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { HiArrowRight, HiPlay } from 'react-icons/hi';
 import { APP_NAME, APP_TAGLINE } from '@/lib/constants';
 
-export default function HeroSection() {
+export default function HeroSection({ settings }: { settings?: any }) {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { scrollYProgress } = useScroll({
@@ -126,7 +126,7 @@ export default function HeroSection() {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75" />
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500" />
                             </span>
-                            #1 Digital Marketing Agency — Trusted by 150+ Brands
+                            {settings?.heroBadge || '#1 Digital Marketing Agency — Trusted by 150+ Brands'}
                         </span>
                     </motion.div>
 
@@ -137,8 +137,8 @@ export default function HeroSection() {
                         transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                         className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-heading font-bold tracking-tight text-dark-900 mb-6"
                     >
-                        {APP_TAGLINE.split(' ').map((word, i) =>
-                            i === APP_TAGLINE.split(' ').length - 1 ? (
+                        {(settings?.heroTitle || APP_TAGLINE).split(' ').map((word: string, i: number) =>
+                            i === (settings?.heroTitle || APP_TAGLINE).split(' ').length - 1 ? (
                                 <span key={i} className="gradient-text"> {word}</span>
                             ) : (
                                 <span key={i}> {word}</span>
@@ -153,7 +153,7 @@ export default function HeroSection() {
                         transition={{ delay: 0.6, duration: 0.8 }}
                         className="text-lg sm:text-xl text-dark-500 max-w-2xl mx-auto mb-10 leading-relaxed"
                     >
-                        We craft data-driven strategies and stunning digital experiences that turn ambitious brands into market leaders. Let's build something extraordinary.
+                        {settings?.heroDescription || 'We craft data-driven strategies and stunning digital experiences that turn ambitious brands into market leaders. Let\'s build something extraordinary.'}
                     </motion.p>
 
                     {/* CTAs */}
@@ -167,7 +167,7 @@ export default function HeroSection() {
                             to="/book-consultation"
                             className="btn-primary text-base px-8 py-4 group"
                         >
-                            Start Your Project
+                            {settings?.heroPrimaryCta || 'Start Your Project'}
                             <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                         <Link
@@ -175,7 +175,7 @@ export default function HeroSection() {
                             className="btn-secondary text-base px-8 py-4 group"
                         >
                             <HiPlay className="w-5 h-5" />
-                            View Our Work
+                            {settings?.heroSecondaryCta || 'View Our Work'}
                         </Link>
                     </motion.div>
 

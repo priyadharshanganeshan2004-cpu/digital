@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,16 +20,28 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
-const contactInfo = [
-    { icon: HiMail, label: 'Email', value: 'hello@nexusdigital.com', href: 'mailto:hello@nexusdigital.com' },
-    { icon: HiPhone, label: 'Phone', value: '+1 (234) 567-890', href: 'tel:+1234567890' },
-    { icon: HiLocationMarker, label: 'Address', value: '123 Innovation Drive, San Francisco, CA 94105', href: null },
-    { icon: HiClock, label: 'Working Hours', value: 'Mon - Fri: 9:00 AM - 6:00 PM', href: null },
-];
-
 export default function ContactPage() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [submitError, setSubmitError] = useState('');
+    const [settings, setSettings] = useState<any>({});
+    const contactInfo = [
+        { icon: HiMail, label: 'Email', value: settings.contactEmail || 'hello@nexusdigital.com', href: settings.contactEmail ? `mailto:${settings.contactEmail}` : 'mailto:hello@nexusdigital.com' },
+        { icon: HiPhone, label: 'Phone', value: settings.phone || '+1 (234) 567-890', href: settings.phone ? `tel:${settings.phone.replace(/\s+/g, '')}` : 'tel:+1234567890' },
+        { icon: HiLocationMarker, label: 'Address', value: settings.address || '123 Innovation Drive, San Francisco, CA 94105', href: null },
+        { icon: HiClock, label: 'Working Hours', value: settings.workingHours || 'Mon - Fri: 9:00 AM - 6:00 PM', href: null },
+    ];
+
+    useEffect(() => {
+        const loadSettings = async () => {
+            try {
+                const { data } = await api.get('/cms/settings');
+                setSettings(data.data || {});
+            } catch {
+                setSettings({});
+            }
+        };
+        loadSettings();
+    }, []);
     const {
         register,
         handleSubmit,

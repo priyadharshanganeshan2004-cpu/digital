@@ -18,6 +18,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const cmsRoutes = require('./routes/cmsRoutes');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -65,6 +66,7 @@ app.use('/api/auth', authRoutes);
 
 app.use('/api/leads', contactLimiter, leadRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/cms', apiLimiter, cmsRoutes);
 
 app.use('/api/admin', apiLimiter, adminRoutes);
 app.use('/api/projects', apiLimiter, projectRoutes);

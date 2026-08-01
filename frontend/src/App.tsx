@@ -39,6 +39,11 @@ const AdminProjectDetail = lazy(() => import('./pages/admin/AdminProjectDetail')
 const AdminInvoices = lazy(() => import('./pages/admin/AdminInvoices'));
 const AdminMessages = lazy(() => import('./pages/admin/AdminMessages'));
 const AdminBookings = lazy(() => import('./pages/admin/AdminBookings'));
+const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
+const AdminServices = lazy(() => import('./pages/admin/AdminServices'));
+const AdminPortfolio = lazy(() => import('./pages/admin/AdminPortfolio'));
+const AdminBlog = lazy(() => import('./pages/admin/AdminBlog'));
+const AdminPricing = lazy(() => import('./pages/admin/AdminPricing'));
 
 // Client Dashboard Pages
 const ClientLayout = lazy(() => import('./pages/dashboard/ClientLayout'));
@@ -137,15 +142,15 @@ export default function App() {
               <Route path="projects/:id" element={<AdminProjectDetail />} />
               <Route path="invoices" element={<AdminInvoices />} />
               <Route path="leads" element={<AdminPlaceholder />} />
-              <Route path="services" element={<AdminPlaceholder />} />
-              <Route path="portfolio" element={<AdminPlaceholder />} />
-              <Route path="blog" element={<AdminPlaceholder />} />
+              <Route path="services" element={<AdminServices />} />
+              <Route path="portfolio" element={<AdminPortfolio />} />
+              <Route path="blog" element={<AdminBlog />} />
               <Route path="testimonials" element={<AdminPlaceholder />} />
               <Route path="bookings" element={<AdminBookings />} />
               <Route path="messages" element={<AdminMessages />} />
-              <Route path="pricing" element={<AdminPlaceholder />} />
+              <Route path="pricing" element={<AdminPricing />} />
               <Route path="analytics" element={<AdminPlaceholder />} />
-              <Route path="settings" element={<AdminPlaceholder />} />
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
 
             {/* Client Dashboard — Protected (client only) */}

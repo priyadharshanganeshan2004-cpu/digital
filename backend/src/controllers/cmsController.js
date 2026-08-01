@@ -1,0 +1,231 @@
+const SiteSettings = require('../models/SiteSettings');
+const Service = require('../models/Service');
+const PricingPlan = require('../models/PricingPlan');
+const asyncHandler = require('../middleware/asyncHandler');
+
+const defaultSiteSettings = {
+  siteName: 'NexusDigital',
+  tagline: 'Transform Your Digital Presence',
+  description:
+    'We are a premier digital marketing agency delivering innovative solutions that drive growth, engagement, and measurable results for ambitious brands.',
+  logoUrl: '',
+  faviconUrl: '',
+  primaryColor: '#6366f1',
+  accentColor: '#a855f7',
+  contactEmail: 'hello@nexusdigital.com',
+  phone: '+1 (555) 123-4567',
+  address: '123 Business Avenue, New York, NY',
+  whatsapp: '',
+  facebook: '',
+  instagram: '',
+  linkedin: '',
+  youtube: '',
+  seoTitle: 'NexusDigital | Digital Marketing Agency',
+  seoDescription:
+    'NexusDigital is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
+  heroBadge: '#1 Digital Marketing Agency — Trusted by 150+ Brands',
+  heroTitle: 'Transform Your Digital Presence',
+  heroDescription:
+    'We craft data-driven strategies and stunning digital experiences that turn ambitious brands into market leaders. Let\'s build something extraordinary.',
+  heroPrimaryCta: 'Start Your Project',
+  heroSecondaryCta: 'View Our Work',
+};
+
+const ensureSiteSettings = async () => {
+  let settings = await SiteSettings.findOne();
+  if (!settings) {
+    settings = await SiteSettings.create(defaultSiteSettings);
+  }
+  return settings;
+};
+
+const getSiteSettings = asyncHandler(async (req, res) => {
+  const settings = await ensureSiteSettings();
+  res.json({ success: true, data: settings });
+});
+
+const getSiteSettingsPublic = asyncHandler(async (req, res) => {
+  const settings = await ensureSiteSettings();
+  res.json({ success: true, data: settings });
+});
+
+const updateSiteSettings = asyncHandler(async (req, res) => {
+  let settings = await ensureSiteSettings();
+
+  Object.keys(req.body || {}).forEach((key) => {
+    if (req.body[key] !== undefined) {
+      settings[key] = req.body[key];
+    }
+  });
+
+  settings.updatedBy = req.user?._id || settings.updatedBy;
+  await settings.save();
+
+  res.json({ success: true, data: settings, message: 'Website settings updated successfully' });
+});
+
+const getServices = asyncHandler(async (req, res) => {
+  const services = await Service.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
+  res.json({ success: true, count: services.length, data: services });
+});
+
+const getServicesPublic = asyncHandler(async (req, res) => {
+  const services = await Service.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
+  res.json({ success: true, count: services.length, data: services });
+});
+
+const getServiceById = asyncHandler(async (req, res) => {
+  const service = await Service.findById(req.params.id);
+  if (!service) {
+    res.status(404);
+    throw new Error('Service not found');
+  }
+  res.json({ success: true, data: service });
+});
+
+const createService = asyncHandler(async (req, res) => {
+  const { title, shortDesc, description, icon, color, featured, slug, sortOrder, isActive } = req.body;
+
+  if (!title || !shortDesc) {
+    res.status(400);
+    throw new Error('Title and short description are required');
+  }
+
+  const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+  const service = await Service.create({
+    title,
+    slug: finalSlug,
+    shortDesc,
+    description: description || '',
+    icon: icon || 'HiCode',
+    color: color || '#6366f1',
+    featured: Boolean(featured),
+    isActive: isActive !== false,
+    sortOrder: sortOrder || 0,
+  });
+
+  res.status(201).json({ success: true, data: service });
+});
+
+const updateService = asyncHandler(async (req, res) => {
+  const service = await Service.findById(req.params.id);
+  if (!service) {
+    res.status(404);
+    throw new Error('Service not found');
+  }
+
+  Object.keys(req.body || {}).forEach((key) => {
+    if (req.body[key] !== undefined) {
+      service[key] = req.body[key];
+    }
+  });
+
+  if (req.body.slug) service.slug = req.body.slug;
+  if (req.body.title && !req.body.slug) {
+    service.slug = req.body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  const updated = await service.save();
+  res.json({ success: true, data: updated, message: 'Service updated successfully' });
+});
+
+const deleteService = asyncHandler(async (req, res) => {
+  const service = await Service.findById(req.params.id);
+  if (!service) {
+    res.status(404);
+    throw new Error('Service not found');
+  }
+
+  await service.deleteOne();
+  res.json({ success: true, message: 'Service deleted successfully' });
+});
+
+const getPricingPlans = asyncHandler(async (req, res) => {
+  const plans = await PricingPlan.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
+  res.json({ success: true, count: plans.length, data: plans });
+});
+
+const getPricingPlansPublic = asyncHandler(async (req, res) => {
+  const plans = await PricingPlan.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
+  res.json({ success: true, count: plans.length, data: plans });
+});
+
+const getPricingPlanById = asyncHandler(async (req, res) => {
+  const plan = await PricingPlan.findById(req.params.id);
+  if (!plan) {
+    res.status(404);
+    throw new Error('Pricing plan not found');
+  }
+  res.json({ success: true, data: plan });
+});
+
+const createPricingPlan = asyncHandler(async (req, res) => {
+  const { name, price, period, description, features, ctaText, isPopular, sortOrder, isActive } = req.body;
+
+  if (!name || !price) {
+    res.status(400);
+    throw new Error('Name and price are required');
+  }
+
+  const plan = await PricingPlan.create({
+    name,
+    price,
+    period: period || '/month',
+    description: description || '',
+    features: features || [],
+    ctaText: ctaText || 'Get Started',
+    isPopular: Boolean(isPopular),
+    isActive: isActive !== false,
+    sortOrder: sortOrder || 0,
+  });
+
+  res.status(201).json({ success: true, data: plan });
+});
+
+const updatePricingPlan = asyncHandler(async (req, res) => {
+  const plan = await PricingPlan.findById(req.params.id);
+  if (!plan) {
+    res.status(404);
+    throw new Error('Pricing plan not found');
+  }
+
+  Object.keys(req.body || {}).forEach((key) => {
+    if (req.body[key] !== undefined) {
+      plan[key] = req.body[key];
+    }
+  });
+
+  const updated = await plan.save();
+  res.json({ success: true, data: updated, message: 'Pricing plan updated successfully' });
+});
+
+const deletePricingPlan = asyncHandler(async (req, res) => {
+  const plan = await PricingPlan.findById(req.params.id);
+  if (!plan) {
+    res.status(404);
+    throw new Error('Pricing plan not found');
+  }
+
+  await plan.deleteOne();
+  res.json({ success: true, message: 'Pricing plan deleted successfully' });
+});
+
+module.exports = {
+  getSiteSettings,
+  getSiteSettingsPublic,
+  updateSiteSettings,
+  getServices,
+  getServicesPublic,
+  getServiceById,
+  createService,
+  updateService,
+  deleteService,
+  getPricingPlans,
+  getPricingPlansPublic,
+  getPricingPlanById,
+  createPricingPlan,
+  updatePricingPlan,
+  deletePricingPlan,
+  ensureSiteSettings,
+};
