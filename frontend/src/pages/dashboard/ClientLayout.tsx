@@ -120,6 +120,9 @@ export default function ClientLayout() {
                             </h1>
                         </div>
                         <div className="flex items-center gap-3">
+                            <Link to="/" className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-dark-700 hover:border-primary-200 hover:text-primary-600 transition-colors">
+                                View Site
+                            </Link>
                             <Link to="/dashboard/notifications" className="relative p-2 rounded-lg text-dark-500 hover:bg-gray-100">
                                 <HiBell className="w-5 h-5" />
                                 {unreadCount > 0 && (

@@ -104,12 +104,20 @@ export default function Navbar() {
                     {/* CTA */}
                     <div className="hidden lg:flex items-center gap-3">
                         {isAuthenticated ? (
-                            <Link
-                                to={user?.role === 'admin' ? '/admin' : '/dashboard'}
-                                className="btn-primary text-sm"
-                            >
-                                Dashboard
-                            </Link>
+                            <>
+                                <Link
+                                    to="/"
+                                    className="px-5 py-2.5 text-sm font-medium text-dark-600 hover:text-primary-600 transition-colors rounded-lg"
+                                >
+                                    View Site
+                                </Link>
+                                <Link
+                                    to={user?.role === 'admin' ? '/admin' : '/dashboard'}
+                                    className="btn-primary text-sm"
+                                >
+                                    Dashboard
+                                </Link>
+                            </>
                         ) : (
                             <>
                                 <Link
@@ -197,9 +205,14 @@ export default function Navbar() {
                             ))}
                             <div className="pt-4 border-t border-gray-100 mt-4 space-y-2">
                                 {isAuthenticated ? (
-                                    <Link to="/dashboard" className="btn-primary w-full text-center">
-                                        Dashboard
-                                    </Link>
+                                    <>
+                                        <Link to="/" className="btn-secondary w-full text-center">
+                                            View Site
+                                        </Link>
+                                        <Link to={user?.role === 'admin' ? '/admin' : '/dashboard'} className="btn-primary w-full text-center">
+                                            Dashboard
+                                        </Link>
+                                    </>
                                 ) : (
                                     <>
                                         <Link to="/login" className="btn-secondary w-full text-center">
