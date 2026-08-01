@@ -20,6 +20,7 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // ── Security & Parsing ──────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
