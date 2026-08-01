@@ -32,13 +32,18 @@ const allowedOrigins = [
     'https://digital-h4ktn7580-digital-797b.vercel.app',
 ];
 
+app.use((req, res, next) => {
+    console.log('Origin:', req.headers.origin);
+    console.log('Allowed:', allowedOrigins);
+    next();
+});
+
 app.use(cors({
-    origin: function (origin, callback) {
+    origin(origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
+            return callback(null, true);
         }
+        return callback(new Error(`Blocked Origin: ${origin}`));
     },
     credentials: true,
 }));
