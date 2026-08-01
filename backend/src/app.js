@@ -26,25 +26,10 @@ app.set('trust proxy', 1);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-const allowedOrigins = [
-    'http://localhost:5173',
-    'https://digital-kappa-one.vercel.app',
-    'https://digital-h4ktn7580-digital-797b.vercel.app',
-];
-
-app.use((req, res, next) => {
-    console.log('Origin:', req.headers.origin);
-    console.log('Allowed:', allowedOrigins);
-    next();
-});
+app.set('trust proxy', 1);
 
 app.use(cors({
-    origin(origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-        return callback(new Error(`Blocked Origin: ${origin}`));
-    },
+    origin: true,
     credentials: true,
 }));
 app.use(helmet());
