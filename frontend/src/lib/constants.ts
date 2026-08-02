@@ -1,8 +1,8 @@
 import type { NavLink } from '@/types';
 
 export const APP_NAME = 'NexusDigital';
-export const APP_TAGLINE = 'Transform Your Digital Presence';
-export const APP_DESCRIPTION = 'We are a premier digital marketing agency delivering innovative solutions that drive growth, engagement, and measurable results for ambitious brands.';
+export const APP_TAGLINE = 'Growth-driven digital strategy';
+export const APP_DESCRIPTION = 'We help ambitious brands grow through strategy, design, and measurable digital performance.';
 
 export const NAV_LINKS: NavLink[] = [
     { label: 'Home', href: '/' },

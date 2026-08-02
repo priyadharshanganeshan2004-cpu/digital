@@ -4,7 +4,7 @@ import api from '@/lib/api';
 
 const initialState = {
   siteName: 'NexusDigital',
-  tagline: 'Transform Your Digital Presence',
+  tagline: 'Growth-driven digital strategy',
   description: '',
   contactEmail: 'hello@nexusdigital.com',
   phone: '+1 (555) 123-4567',
@@ -13,11 +13,11 @@ const initialState = {
   accentColor: '#a855f7',
   seoTitle: 'NexusDigital | Digital Marketing Agency',
   seoDescription: '',
-  heroBadge: '#1 Digital Marketing Agency — Trusted by 150+ Brands',
-  heroTitle: 'Transform Your Digital Presence',
+  heroBadge: 'Digital growth partner for ambitious brands',
+  heroTitle: 'Growth-driven digital strategy',
   heroDescription: '',
-  heroPrimaryCta: 'Start Your Project',
-  heroSecondaryCta: 'View Our Work',
+  heroPrimaryCta: 'Start your project',
+  heroSecondaryCta: 'See our work',
 };
 
 export default function AdminSettings() {

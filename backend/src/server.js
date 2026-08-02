@@ -11,18 +11,18 @@ const seedDefaultCMSData = async () => {
     if (settingsCount === 0) {
         await SiteSettings.create({
             siteName: 'NexusDigital',
-            tagline: 'Transform Your Digital Presence',
-            description: 'We are a premier digital marketing agency delivering innovative solutions that drive growth, engagement, and measurable results for ambitious brands.',
+            tagline: 'Growth-driven digital strategy',
+            description: 'We help ambitious brands grow with strategy, design, web experiences, and measurable digital performance.',
             contactEmail: 'hello@nexusdigital.com',
             phone: '+1 (555) 123-4567',
             address: '123 Business Avenue, New York, NY',
             seoTitle: 'NexusDigital | Digital Marketing Agency',
             seoDescription: 'NexusDigital is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
-            heroBadge: '#1 Digital Marketing Agency — Trusted by 150+ Brands',
-            heroTitle: 'Transform Your Digital Presence',
-            heroDescription: 'We craft data-driven strategies and stunning digital experiences that turn ambitious brands into market leaders. Let\'s build something extraordinary.',
-            heroPrimaryCta: 'Start Your Project',
-            heroSecondaryCta: 'View Our Work',
+            heroBadge: 'Digital growth partner for ambitious brands',
+            heroTitle: 'Growth-driven digital strategy',
+            heroDescription: 'We blend strategy, creative execution, and measurable performance to help brands grow with clarity and confidence.',
+            heroPrimaryCta: 'Start your project',
+            heroSecondaryCta: 'See our work',
         });
     }
 

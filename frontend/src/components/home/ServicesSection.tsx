@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -6,51 +7,13 @@ import {
     HiDeviceMobile, HiMail, HiArrowRight,
 } from 'react-icons/hi';
 import SectionHeading from '@/components/ui/SectionHeading';
+import api from '@/lib/api';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
     HiCode, HiShoppingCart, HiColorSwatch, HiTrendingUp,
     HiSpeakerphone, HiCursorClick, HiPencilAlt, HiLightningBolt,
     HiDeviceMobile, HiMail,
 };
-
-const featuredServices = [
-    {
-        title: 'Website Development',
-        desc: 'Custom, high-performance websites with cutting-edge technology and stunning design.',
-        icon: 'HiCode',
-        color: 'from-blue-500 to-indigo-600',
-        bg: 'bg-blue-50',
-        textColor: 'text-blue-600',
-        href: '/services/website-development',
-    },
-    {
-        title: 'E-commerce Solutions',
-        desc: 'Scalable online stores optimized for conversions and seamless shopping experiences.',
-        icon: 'HiShoppingCart',
-        color: 'from-purple-500 to-violet-600',
-        bg: 'bg-purple-50',
-        textColor: 'text-purple-600',
-        href: '/services/ecommerce-development',
-    },
-    {
-        title: 'Social Media',
-        desc: 'Strategic campaigns that build communities and drive meaningful engagement.',
-        icon: 'HiSpeakerphone',
-        color: 'from-orange-500 to-amber-600',
-        bg: 'bg-orange-50',
-        textColor: 'text-orange-600',
-        href: '/services/social-media-marketing',
-    },
-    {
-        title: 'Google Ads',
-        desc: 'High-ROI paid advertising campaigns that deliver qualified traffic and conversions.',
-        icon: 'HiCursorClick',
-        color: 'from-cyan-500 to-blue-600',
-        bg: 'bg-cyan-50',
-        textColor: 'text-cyan-600',
-        href: '/services/google-ads',
-    },
-];
 
 const containerVariants = {
     hidden: {},
@@ -71,6 +34,30 @@ const itemVariants = {
 };
 
 export default function ServicesSection() {
+    const [services, setServices] = useState<any[]>([]);
+
+    useEffect(() => {
+        const loadServices = async () => {
+            try {
+                const { data } = await api.get('/cms/services');
+                setServices(data.data || []);
+            } catch {
+                setServices([]);
+            }
+        };
+        loadServices();
+    }, []);
+
+    const featuredServices = (services.length ? services : []).map((service) => ({
+        title: service.title,
+        desc: service.shortDesc,
+        icon: service.icon || 'HiCode',
+        color: service.color ? `from-${service.color.replace('#', '')}-500 to-indigo-600` : 'from-blue-500 to-indigo-600',
+        bg: 'bg-blue-50',
+        textColor: 'text-blue-600',
+        href: `/services/${service.slug || service.title.toLowerCase().replace(/\s+/g, '-')}`,
+    }));
+
     return (
         <section className="section-padding bg-gray-50/50 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary-100/30 rounded-full blur-[120px]" />

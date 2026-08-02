@@ -5,9 +5,9 @@ const asyncHandler = require('../middleware/asyncHandler');
 
 const defaultSiteSettings = {
   siteName: 'NexusDigital',
-  tagline: 'Transform Your Digital Presence',
+  tagline: 'Growth-driven digital strategy',
   description:
-    'We are a premier digital marketing agency delivering innovative solutions that drive growth, engagement, and measurable results for ambitious brands.',
+    'We help ambitious brands grow with strategy, design, web experiences, and measurable digital performance.',
   logoUrl: '',
   faviconUrl: '',
   primaryColor: '#6366f1',
@@ -23,12 +23,12 @@ const defaultSiteSettings = {
   seoTitle: 'NexusDigital | Digital Marketing Agency',
   seoDescription:
     'NexusDigital is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
-  heroBadge: '#1 Digital Marketing Agency — Trusted by 150+ Brands',
-  heroTitle: 'Transform Your Digital Presence',
+  heroBadge: 'Digital growth partner for ambitious brands',
+  heroTitle: 'Growth-driven digital strategy',
   heroDescription:
-    'We craft data-driven strategies and stunning digital experiences that turn ambitious brands into market leaders. Let\'s build something extraordinary.',
-  heroPrimaryCta: 'Start Your Project',
-  heroSecondaryCta: 'View Our Work',
+    'We blend strategy, creative execution, and measurable performance to help brands grow with clarity and confidence.',
+  heroPrimaryCta: 'Start your project',
+  heroSecondaryCta: 'See our work',
 };
 
 const ensureSiteSettings = async () => {

@@ -1,12 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { HiCheck, HiArrowRight } from 'react-icons/hi';
 import SectionHeading from '@/components/ui/SectionHeading';
-import { PRICING_PLANS } from '@/lib/constants';
+import api from '@/lib/api';
 
 export default function PricingSection() {
+    const [plans, setPlans] = useState<any[]>([]);
     const [isAnnual, setIsAnnual] = useState(false);
+
+    useEffect(() => {
+        const loadPlans = async () => {
+            try {
+                const { data } = await api.get('/cms/pricing');
+                setPlans(data.data || []);
+            } catch {
+                setPlans([]);
+            }
+        };
+        loadPlans();
+    }, []);
 
     return (
         <section className="section-padding bg-white relative overflow-hidden">
@@ -39,7 +52,7 @@ export default function PricingSection() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                    {PRICING_PLANS.map((plan, i) => (
+                    {(plans.length ? plans : []).map((plan, i) => (
                         <motion.div
                             key={plan.name}
                             initial={{ opacity: 0, y: 40 }}

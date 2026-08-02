@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const siteSettingsSchema = new mongoose.Schema(
   {
     siteName: { type: String, default: 'NexusDigital' },
-    tagline: { type: String, default: 'Transform Your Digital Presence' },
+    tagline: { type: String, default: 'Growth-driven digital strategy' },
     description: {
       type: String,
       default:
-        'We are a premier digital marketing agency delivering innovative solutions that drive growth, engagement, and measurable results for ambitious brands.',
+        'We help ambitious brands grow with strategy, design, web experiences, and measurable digital performance.',
     },
     logoUrl: { type: String, default: '' },
     faviconUrl: { type: String, default: '' },
@@ -27,15 +27,15 @@ const siteSettingsSchema = new mongoose.Schema(
       default:
         'NexusDigital is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
     },
-    heroBadge: { type: String, default: '#1 Digital Marketing Agency — Trusted by 150+ Brands' },
-    heroTitle: { type: String, default: 'Transform Your Digital Presence' },
+    heroBadge: { type: String, default: 'Digital growth partner for ambitious brands' },
+    heroTitle: { type: String, default: 'Growth-driven digital strategy' },
     heroDescription: {
       type: String,
       default:
-        'We craft data-driven strategies and stunning digital experiences that turn ambitious brands into market leaders. Let\'s build something extraordinary.',
+        'We blend strategy, creative execution, and measurable performance to help brands grow with clarity and confidence.',
     },
-    heroPrimaryCta: { type: String, default: 'Start Your Project' },
-    heroSecondaryCta: { type: String, default: 'View Our Work' },
+    heroPrimaryCta: { type: String, default: 'Start your project' },
+    heroSecondaryCta: { type: String, default: 'See our work' },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }

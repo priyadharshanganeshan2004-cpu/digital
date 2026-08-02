@@ -126,7 +126,7 @@ export default function HeroSection({ settings }: { settings?: any }) {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75" />
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500" />
                             </span>
-                            {settings?.heroBadge || '#1 Digital Marketing Agency — Trusted by 150+ Brands'}
+                            {settings?.heroBadge || 'Digital growth partner for ambitious brands'}
                         </span>
                     </motion.div>
 
@@ -153,7 +153,7 @@ export default function HeroSection({ settings }: { settings?: any }) {
                         transition={{ delay: 0.6, duration: 0.8 }}
                         className="text-lg sm:text-xl text-dark-500 max-w-2xl mx-auto mb-10 leading-relaxed"
                     >
-                        {settings?.heroDescription || 'We craft data-driven strategies and stunning digital experiences that turn ambitious brands into market leaders. Let\'s build something extraordinary.'}
+                        {settings?.heroDescription || 'We blend strategy, creative execution, and measurable performance to help brands grow with clarity and confidence.'}
                     </motion.p>
 
                     {/* CTAs */}
@@ -167,7 +167,7 @@ export default function HeroSection({ settings }: { settings?: any }) {
                             to="/book-consultation"
                             className="btn-primary text-base px-8 py-4 group"
                         >
-                            {settings?.heroPrimaryCta || 'Start Your Project'}
+                            {settings?.heroPrimaryCta || 'Start your project'}
                             <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                         <Link
@@ -175,7 +175,7 @@ export default function HeroSection({ settings }: { settings?: any }) {
                             className="btn-secondary text-base px-8 py-4 group"
                         >
                             <HiPlay className="w-5 h-5" />
-                            {settings?.heroSecondaryCta || 'View Our Work'}
+                            {settings?.heroSecondaryCta || 'See our work'}
                         </Link>
                     </motion.div>
 
