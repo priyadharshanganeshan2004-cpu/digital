@@ -63,7 +63,13 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const email = (req.body.email || '').trim().toLowerCase();
+    const password = String(req.body.password || '');
+
+    if (!email || !password) {
+        res.status(400);
+        throw new Error('Email and password are required');
+    }
 
     const user = await User.findOne({ email }).select('+password');
 

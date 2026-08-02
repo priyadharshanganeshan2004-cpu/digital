@@ -30,14 +30,17 @@ app.use(cookieParser());
 app.set('trust proxy', 1);
 
 const allowedOrigins = [
-    'https://digital-kappa-one.vercel.app',
-    'http://localhost:5173',
-    'http://localhost:3000',
+    /^https:\/\/.*\.vercel\.app$/i,
+    /^http:\/\/localhost:(5173|3000)$/i,
+    /^https:\/\/digital-87kt\.onrender\.com$/i,
+    /^https:\/\/digital-87kt\.onrender\.app$/i,
 ];
+
+const isAllowedOrigin = (origin) => !origin || allowedOrigins.some((pattern) => pattern.test(origin));
 
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (isAllowedOrigin(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -50,7 +53,7 @@ app.use(cors({
 
 app.options(/.*/, cors({
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (isAllowedOrigin(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
