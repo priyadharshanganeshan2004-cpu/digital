@@ -150,19 +150,39 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @route   PUT /api/auth/profile
 // @access  Private
 const updateProfile = asyncHandler(async (req, res) => {
+    console.log('[updateProfile] Incoming request body:', JSON.stringify(req.body));
+    console.log('[updateProfile] User ID from token:', req.user._id);
+
     const user = await User.findById(req.user._id);
     if (!user) {
         res.status(404);
         throw new Error('User not found');
     }
 
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
-    user.phone = req.body.phone || user.phone;
-    user.company = req.body.company || user.company;
+    // ✅ FIX: Use explicit hasOwnProperty checks instead of `|| user.field`
+    // The old `req.body.phone || user.phone` pattern silently discards empty-string
+    // updates (clearing a field), causing the save to be a no-op while still
+    // returning success — the root cause of the "success but not persisted" bug.
+    const body = req.body;
+
+    if (body.name !== undefined && body.name !== '') user.name = body.name;
+    if (body.email !== undefined && body.email !== '') user.email = body.email;
+    if (Object.prototype.hasOwnProperty.call(body, 'phone')) user.phone = body.phone;
+    if (Object.prototype.hasOwnProperty.call(body, 'company')) user.company = body.company;
+
+    console.log('[updateProfile] Document to be saved:', { name: user.name, email: user.email, phone: user.phone, company: user.company });
 
     const updatedUser = await user.save();
-    res.json({ success: true, data: updatedUser });
+
+    console.log('[updateProfile] MongoDB save result — updated _id:', updatedUser._id, '| updatedAt:', updatedUser.updatedAt);
+
+    res.json({
+        success: true,
+        message: 'Profile updated successfully',
+        user: updatedUser,
+        // Keep backward-compat: also expose as `data` so both response shapes work
+        data: updatedUser,
+    });
 });
 
 // @desc    Change password

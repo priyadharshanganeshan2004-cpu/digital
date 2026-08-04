@@ -50,6 +50,9 @@ const getSiteSettingsPublic = asyncHandler(async (req, res) => {
 });
 
 const updateSiteSettings = asyncHandler(async (req, res) => {
+  console.log('[updateSiteSettings] Incoming request body keys:', Object.keys(req.body || {}));
+  console.log('[updateSiteSettings] Updated by user:', req.user?._id);
+
   let settings = await ensureSiteSettings();
 
   Object.keys(req.body || {}).forEach((key) => {
@@ -59,9 +62,11 @@ const updateSiteSettings = asyncHandler(async (req, res) => {
   });
 
   settings.updatedBy = req.user?._id || settings.updatedBy;
-  await settings.save();
 
-  res.json({ success: true, data: settings, message: 'Website settings updated successfully' });
+  const saved = await settings.save();
+  console.log('[updateSiteSettings] MongoDB save result — _id:', saved._id, '| updatedAt:', saved.updatedAt);
+
+  res.json({ success: true, data: saved, message: 'Website settings updated successfully' });
 });
 
 const getServices = asyncHandler(async (req, res) => {

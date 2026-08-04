@@ -109,21 +109,36 @@ const createClient = asyncHandler(async (req, res) => {
 // @route   PUT /api/admin/clients/:id
 // @access  Admin
 const updateClient = asyncHandler(async (req, res) => {
+    console.log('[updateClient] Incoming request body:', JSON.stringify(req.body));
+    console.log('[updateClient] Client ID:', req.params.id);
+
     const client = await User.findOne({ _id: req.params.id, role: 'client' });
     if (!client) {
         res.status(404);
         throw new Error('Client not found');
     }
 
-    const { name, email, phone, company, isActive } = req.body;
-    if (name) client.name = name;
-    if (email) client.email = email;
-    if (phone !== undefined) client.phone = phone;
-    if (company !== undefined) client.company = company;
-    if (typeof isActive === 'boolean') client.isActive = isActive;
+    const body = req.body;
+
+    // ✅ FIX: Use explicit checks so empty strings are treated as intentional clears
+    if (body.name !== undefined && body.name !== '') client.name = body.name;
+    if (body.email !== undefined && body.email !== '') client.email = body.email;
+    if (Object.prototype.hasOwnProperty.call(body, 'phone')) client.phone = body.phone;
+    if (Object.prototype.hasOwnProperty.call(body, 'company')) client.company = body.company;
+    if (typeof body.isActive === 'boolean') client.isActive = body.isActive;
+
+    console.log('[updateClient] Document to be saved:', { name: client.name, email: client.email, phone: client.phone, company: client.company });
 
     const updated = await client.save();
-    res.json({ success: true, data: updated });
+
+    console.log('[updateClient] MongoDB save result — updated _id:', updated._id, '| updatedAt:', updated.updatedAt);
+
+    res.json({
+        success: true,
+        message: 'Profile updated successfully',
+        user: updated,
+        data: updated,
+    });
 });
 
 // @desc    Delete (deactivate) client

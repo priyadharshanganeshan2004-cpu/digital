@@ -20,6 +20,7 @@ interface PasswordFormInputs {
 
 export default function ClientSettings() {
     const { user, updateUser } = useAuth();
+    const [profileError, setProfileError] = useState<string | null>(null);
     const [profileSuccess, setProfileSuccess] = useState(false);
     const [passwordSuccess, setPasswordSuccess] = useState(false);
 
@@ -37,13 +38,23 @@ export default function ClientSettings() {
     const updateProfileMutation = useMutation({
         mutationFn: async (data: ProfileFormInputs) => {
             const res = await api.put('/auth/profile', data);
-            return res.data.data;
+            // Handle both response shapes: { data: user } and { user: user }
+            return res.data.user ?? res.data.data;
         },
         onSuccess: (updatedUser) => {
+            setProfileError(null);
             updateUser(updatedUser);
             setProfileSuccess(true);
             setTimeout(() => setProfileSuccess(false), 3000);
-        }
+        },
+        onError: (error: any) => {
+            const message =
+                error?.response?.data?.message ||
+                error?.message ||
+                'Failed to update profile. Please try again.';
+            setProfileError(message);
+            console.error('[ClientSettings] Profile update failed:', error?.response?.data ?? error);
+        },
     });
 
     const changePasswordMutation = useMutation({
@@ -148,6 +159,10 @@ export default function ClientSettings() {
 
                         {profileSuccess && (
                             <p className="text-xs font-medium text-green-600">Profile updated successfully!</p>
+                        )}
+
+                        {profileError && (
+                            <p className="text-xs font-medium text-red-500">{profileError}</p>
                         )}
 
                         <button
