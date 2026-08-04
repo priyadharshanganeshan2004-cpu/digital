@@ -1,24 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import SEOHead from '@/components/ui/SEOHead';
 import PricingSection from '@/components/home/PricingSection';
 import CTASection from '@/components/home/CTASection';
 import { motion } from 'framer-motion';
 import api from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
 
 export default function PricingPage() {
-    const [siteSettings, setSiteSettings] = useState<any>(null);
-
-    useEffect(() => {
-        const loadSettings = async () => {
-            try {
-                const { data } = await api.get('/cms/settings');
-                setSiteSettings(data.data);
-            } catch {
-                setSiteSettings(null);
-            }
-        };
-        loadSettings();
-    }, []);
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 5 * 60 * 1000,
+    });
     return (
         <>
             <SEOHead

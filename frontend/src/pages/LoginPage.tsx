@@ -34,8 +34,14 @@ export default function LoginPage() {
     const onSubmit = async (data: LoginFormData) => {
         try {
             setError('');
-            await login(data.email, data.password);
-            navigate('/dashboard');
+            const user = await login(data.email, data.password);
+            if (user.mustResetPassword) {
+                navigate('/reset-password?firstLogin=true', {
+                    state: { email: data.email, currentPassword: data.password },
+                });
+                return;
+            }
+            navigate(user.role === 'admin' ? '/admin' : '/dashboard');
         } catch {
             setError('Invalid email or password. Please try again.');
         }

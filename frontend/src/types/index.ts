@@ -12,6 +12,7 @@ export interface User {
     role: 'admin' | 'client';
     isActive: boolean;
     isVerified: boolean;
+    mustResetPassword?: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -229,4 +230,60 @@ export interface PricingPlan {
     features: string[];
     isPopular: boolean;
     ctaText: string;
+}
+
+export interface EmailLog {
+    _id: string;
+    recipient: string;
+    subject: string;
+    templateKey: string;
+    category: string;
+    status: 'sent' | 'failed';
+    provider: string;
+    html?: string;
+    text?: string;
+    error?: string;
+    createdAt: string;
+    sentAt: string;
+}
+
+export interface NewsletterSubscriber {
+    _id: string;
+    email: string;
+    name?: string;
+    status: 'subscribed' | 'unsubscribed';
+    source?: string;
+    confirmedAt?: string;
+    unsubscribedAt?: string;
+    createdAt: string;
+}
+
+export interface EmailTemplate {
+    _id: string;
+    key: string;
+    name: string;
+    subject: string;
+    description?: string;
+    html?: string;
+    text?: string;
+    variables?: string[];
+    isActive: boolean;
+    version?: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface EmailStats {
+    sent: number;
+    failed: number;
+    subscribers: number;
+    templates: number;
+    deliveryRate: number;
+    recent?: EmailLog[];
+    newsletter?: {
+        subscribed: number;
+        unsubscribed: number;
+        total: number;
+        recent: NewsletterSubscriber[];
+    };
 }

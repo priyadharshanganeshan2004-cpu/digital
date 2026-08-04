@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -34,27 +34,20 @@ const itemVariants = {
 };
 
 export default function ServicesSection() {
-    const [services, setServices] = useState<any[]>([]);
-
-    useEffect(() => {
-        const loadServices = async () => {
-            try {
-                const { data } = await api.get('/cms/services');
-                setServices(data.data || []);
-            } catch {
-                setServices([]);
-            }
-        };
-        loadServices();
-    }, []);
+    const { data: services = [] } = useQuery({
+        queryKey: ['cms-services'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/services');
+            return data.data || [];
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
     const featuredServices = (services.length ? services : []).map((service) => ({
         title: service.title,
         desc: service.shortDesc,
         icon: service.icon || 'HiCode',
-        color: service.color ? `from-${service.color.replace('#', '')}-500 to-indigo-600` : 'from-blue-500 to-indigo-600',
-        bg: 'bg-blue-50',
-        textColor: 'text-blue-600',
+        color: service.color || '#3b82f6',
         href: `/services/${service.slug || service.title.toLowerCase().replace(/\s+/g, '-')}`,
     }));
 
@@ -90,8 +83,8 @@ export default function ServicesSection() {
                                         style={{ backgroundImage: `linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500))` }}
                                     />
 
-                                    <div className={`w-12 h-12 rounded-xl ${service.bg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
-                                        <Icon className={`w-6 h-6 ${service.textColor}`} />
+                                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: `${service.color}14` }}>
+                                        <Icon className="w-6 h-6" style={{ color: service.color }} />
                                     </div>
 
                                     <h3 className="text-lg font-heading font-semibold text-dark-900 mb-2 group-hover:text-primary-600 transition-colors">

@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import { PageLoader } from './components/ui/Skeleton';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { useEffect } from 'react';
 
@@ -14,6 +15,7 @@ const ServicesPage = lazy(() => import('./pages/ServicesPage'));
 const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'));
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
+const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage'));
 const PricingPage = lazy(() => import('./pages/PricingPage'));
 const TestimonialsPage = lazy(() => import('./pages/TestimonialsPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
@@ -44,6 +46,7 @@ const AdminServices = lazy(() => import('./pages/admin/AdminServices'));
 const AdminPortfolio = lazy(() => import('./pages/admin/AdminPortfolio'));
 const AdminBlog = lazy(() => import('./pages/admin/AdminBlog'));
 const AdminPricing = lazy(() => import('./pages/admin/AdminPricing'));
+const AdminEmailManagement = lazy(() => import('./pages/admin/AdminEmailManagement'));
 
 // Client Dashboard Pages
 const ClientLayout = lazy(() => import('./pages/dashboard/ClientLayout'));
@@ -102,7 +105,7 @@ export default function App() {
   const location = useLocation();
 
   return (
-    <>
+    <ErrorBoundary>
       <ScrollToTop />
       <AnimatePresence mode="wait">
         <Suspense fallback={<PageLoader />}>
@@ -115,6 +118,7 @@ export default function App() {
               <Route path="/services/:slug" element={<ServiceDetailPage />} />
               <Route path="/portfolio" element={<PortfolioPage />} />
               <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:slug" element={<BlogDetailPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/testimonials" element={<TestimonialsPage />} />
               <Route path="/contact" element={<ContactPage />} />
@@ -131,11 +135,12 @@ export default function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             </Route>
 
             {/* Admin Dashboard — Protected (admin only) */}
-            <Route path="/admin" element={<ProtectedRoute role="admin"><AdminLayout /></ProtectedRoute>}>
+            <Route path="/admin" element={<ProtectedRoute role="admin"><ErrorBoundary><AdminLayout /></ErrorBoundary></ProtectedRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="clients" element={<AdminClients />} />
               <Route path="projects" element={<AdminProjects />} />
@@ -148,13 +153,14 @@ export default function App() {
               <Route path="testimonials" element={<AdminPlaceholder />} />
               <Route path="bookings" element={<AdminBookings />} />
               <Route path="messages" element={<AdminMessages />} />
+              <Route path="newsletter" element={<AdminEmailManagement />} />
               <Route path="pricing" element={<AdminPricing />} />
-              <Route path="analytics" element={<AdminPlaceholder />} />
+              <Route path="analytics" element={<AdminDashboard />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>
 
             {/* Client Dashboard — Protected (client only) */}
-            <Route path="/dashboard" element={<ProtectedRoute role="client"><ClientLayout /></ProtectedRoute>}>
+            <Route path="/dashboard" element={<ProtectedRoute role="client"><ErrorBoundary><ClientLayout /></ErrorBoundary></ProtectedRoute>}>
               <Route index element={<ClientDashboard />} />
               <Route path="projects" element={<ClientProjects />} />
               <Route path="projects/:id" element={<ClientProjectDetail />} />
@@ -181,6 +187,6 @@ export default function App() {
           </Routes>
         </Suspense>
       </AnimatePresence>
-    </>
+    </ErrorBoundary>
   );
 }

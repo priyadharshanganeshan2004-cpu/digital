@@ -1,9 +1,17 @@
 import axios from 'axios';
 
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'https://digital-87kt.onrender.com/api').replace(/\/$/, '');
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+if (!API_BASE_URL) {
+    throw new Error('VITE_API_URL is required. Configure the API base URL before building the app.');
+}
+
+const normalizedBaseUrl = API_BASE_URL.replace(/\/$/, '');
+
+let inMemoryAccessToken: string | null = null;
 
 const api = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: normalizedBaseUrl,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -12,9 +20,8 @@ const api = axios.create({
 
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        if (inMemoryAccessToken) {
+            config.headers.Authorization = `Bearer ${inMemoryAccessToken}`;
         }
         return config;
     },
@@ -28,14 +35,12 @@ api.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-                const refreshToken = localStorage.getItem('refreshToken');
-                const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, { refreshToken });
-                localStorage.setItem('accessToken', data.accessToken);
+                const { data } = await axios.post(`${normalizedBaseUrl}/auth/refresh`, {}, { withCredentials: true });
+                inMemoryAccessToken = data.accessToken;
                 originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
                 return api(originalRequest);
             } catch {
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
+                inMemoryAccessToken = null;
                 window.location.href = '/login';
                 return Promise.reject(error);
             }
@@ -43,5 +48,15 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+export const setAccessToken = (token: string | null) => {
+    inMemoryAccessToken = token;
+};
+
+export const getAccessToken = () => inMemoryAccessToken;
+
+export const clearAccessToken = () => {
+    inMemoryAccessToken = null;
+};
 
 export default api;

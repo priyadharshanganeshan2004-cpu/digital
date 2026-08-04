@@ -1,6 +1,15 @@
 const Project = require('../models/Project');
 const Notification = require('../models/Notification');
 const asyncHandler = require('../middleware/asyncHandler');
+const { sendProjectUpdateEmail } = require('../services/emailService');
+
+const safeSend = async (task, label) => {
+    try {
+        await task;
+    } catch (error) {
+        console.error(`${label} email delivery failed:`, error.message);
+    }
+};
 
 // @desc    Get all projects (admin) or own projects (client)
 // @route   GET /api/projects
@@ -67,6 +76,8 @@ const createProject = asyncHandler(async (req, res) => {
 
     const populated = await project.populate('client', 'name email company');
 
+    await safeSend(sendProjectUpdateEmail({ project: populated, client: populated.client, updateType: 'created', message: `A new project "${title}" has been assigned to you.` }), 'Project');
+
     // Notify client
     await Notification.create({
         recipient: client,
@@ -119,6 +130,8 @@ const updateProject = asyncHandler(async (req, res) => {
     const updated = await project.save();
     const populated = await updated.populate('client', 'name email company');
 
+    await safeSend(sendProjectUpdateEmail({ project: populated, client: populated.client, updateType: 'status', message: `Your project "${project.title}" is now "${status}".` }), 'Project status');
+
     res.json({ success: true, data: populated });
 });
 
@@ -148,6 +161,8 @@ const updateMilestones = asyncHandler(async (req, res) => {
 
     project.milestones = req.body.milestones;
     const updated = await project.save();
+
+    await safeSend(sendProjectUpdateEmail({ project: updated, client: updated.client, updateType: 'milestones', message: `Milestones for "${project.title}" have been updated.` }), 'Project milestones');
 
     // Notify client
     await Notification.create({
@@ -182,6 +197,8 @@ const addDeliverable = asyncHandler(async (req, res) => {
     });
 
     const updated = await project.save();
+
+    await safeSend(sendProjectUpdateEmail({ project: updated, client: updated.client, updateType: 'deliverable', message: `A new file "${name}" has been uploaded to your project "${project.title}".` }), 'Project deliverable');
 
     // Notify client
     await Notification.create({

@@ -1,6 +1,15 @@
 const Invoice = require('../models/Invoice');
 const Notification = require('../models/Notification');
 const asyncHandler = require('../middleware/asyncHandler');
+const { sendInvoiceEmail } = require('../services/emailService');
+
+const safeSend = async (task, label) => {
+    try {
+        await task;
+    } catch (error) {
+        console.error(`${label} email delivery failed:`, error.message);
+    }
+};
 
 // @desc    Get invoices (admin: all, client: own)
 // @route   GET /api/invoices
@@ -70,6 +79,8 @@ const createInvoice = asyncHandler(async (req, res) => {
 
     const populated = await invoice.populate('client', 'name email company');
 
+    await safeSend(sendInvoiceEmail({ invoice: populated, client: populated.client, mode: 'new' }), 'Invoice');
+
     // Notify client
     await Notification.create({
         recipient: client,
@@ -121,6 +132,10 @@ const updateInvoice = asyncHandler(async (req, res) => {
     const updated = await invoice.save();
     const populated = await updated.populate('client', 'name email company');
 
+    if (status === 'sent') {
+        await safeSend(sendInvoiceEmail({ invoice: populated, client: populated.client, mode: 'new' }), 'Invoice status');
+    }
+
     res.json({ success: true, data: populated });
 });
 
@@ -140,6 +155,10 @@ const recordPayment = asyncHandler(async (req, res) => {
 
     const updated = await invoice.save();
 
+    const populated = await updated.populate('client', 'name email company');
+
+    await safeSend(sendInvoiceEmail({ invoice: populated, client: populated.client, mode: 'paid' }), 'Invoice payment');
+
     // Notify client
     await Notification.create({
         recipient: invoice.client,
@@ -149,7 +168,7 @@ const recordPayment = asyncHandler(async (req, res) => {
         link: `/dashboard/invoices`,
     });
 
-    res.json({ success: true, data: updated });
+    res.json({ success: true, data: populated });
 });
 
 module.exports = {

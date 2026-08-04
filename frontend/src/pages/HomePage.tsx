@@ -1,8 +1,9 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense } from 'react';
 import SEOHead from '@/components/ui/SEOHead';
 import HeroSection from '@/components/home/HeroSection';
 import { PageLoader } from '@/components/ui/Skeleton';
 import api from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
 
 const ServicesSection = lazy(() => import('@/components/home/ServicesSection'));
 const WhyChooseUsSection = lazy(() => import('@/components/home/WhyChooseUsSection'));
@@ -12,19 +13,14 @@ const PricingSection = lazy(() => import('@/components/home/PricingSection'));
 const CTASection = lazy(() => import('@/components/home/CTASection'));
 
 export default function HomePage() {
-    const [siteSettings, setSiteSettings] = useState<any>(null);
-
-    useEffect(() => {
-        const loadSiteSettings = async () => {
-            try {
-                const { data } = await api.get('/cms/settings');
-                setSiteSettings(data.data);
-            } catch {
-                setSiteSettings(null);
-            }
-        };
-        loadSiteSettings();
-    }, []);
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
     return (
         <>

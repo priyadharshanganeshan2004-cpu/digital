@@ -32,15 +32,15 @@ export default function BookConsultationPage() {
     const onSubmit = async (data: BookingFormData) => {
         try {
             setSubmitError('');
-            // Formatting the message to include booking date/time for the backend
-            const leadData = {
+            await api.post('/bookings', {
                 name: data.name,
                 email: data.email,
                 phone: data.phone,
                 service: data.service,
-                message: `Consultation Booked for ${data.date} at ${data.time}.\n\nAdditional Message: ${data.message || 'None'}`
-            };
-            await api.post('/leads', leadData);
+                date: data.date,
+                time: data.time,
+                message: data.message,
+            });
             setIsSubmitted(true);
             reset();
         } catch (error: any) {

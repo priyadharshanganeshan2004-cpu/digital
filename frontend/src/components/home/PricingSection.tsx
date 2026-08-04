@@ -1,25 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { HiCheck, HiArrowRight } from 'react-icons/hi';
 import SectionHeading from '@/components/ui/SectionHeading';
+import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 
 export default function PricingSection() {
-    const [plans, setPlans] = useState<any[]>([]);
     const [isAnnual, setIsAnnual] = useState(false);
-
-    useEffect(() => {
-        const loadPlans = async () => {
-            try {
-                const { data } = await api.get('/cms/pricing');
-                setPlans(data.data || []);
-            } catch {
-                setPlans([]);
-            }
-        };
-        loadPlans();
-    }, []);
+    const { data: plans = [] } = useQuery({
+        queryKey: ['cms-pricing'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/pricing');
+            return data.data || [];
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
     return (
         <section className="section-padding bg-white relative overflow-hidden">

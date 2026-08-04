@@ -2,14 +2,37 @@ const User = require('../models/User');
 const asyncHandler = require('../middleware/asyncHandler');
 const { generateAccessToken, generateRefreshToken } = require('../utils/generateToken');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+const { sendWelcomeEmail, sendLoginNotificationEmail, sendOtpEmail } = require('../services/emailService');
+const { generateOtp, verifyOtp, invalidateOtps } = require('../services/otpService');
+
+const safeSend = async (task, label) => {
+    try {
+        await task;
+    } catch (error) {
+        console.error(`${label} email delivery failed:`, error.message);
+    }
+};
+
+const isStrongPassword = (value) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(String(value || ''));
+
+const refreshCookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/api/auth',
+};
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-    const name = req.body.name?.trim();
-    const email = req.body.email?.trim().toLowerCase();
+    if (typeof req.body.name !== 'string' || typeof req.body.email !== 'string' || typeof req.body.password !== 'string') {
+        res.status(400);
+        throw new Error('Name, email, and password are required');
+    }
+
+    const name = req.body.name.trim();
+    const email = req.body.email.trim().toLowerCase();
     const password = req.body.password;
     const phone = req.body.phone?.trim();
     const company = req.body.company?.trim();
@@ -19,9 +42,9 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('Name, email, and password are required');
     }
 
-    if (password.length < 6) {
+    if (!isStrongPassword(password)) {
         res.status(400);
-        throw new Error('Password must be at least 6 characters');
+        throw new Error('Password must be at least 8 characters and include uppercase letters and numbers');
     }
 
     const userExists = await User.findOne({ email });
@@ -30,15 +53,11 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('User already exists');
     }
 
-    // First account is admin, rest are clients
-    const isFirstAccount = (await User.countDocuments({})) === 0;
-    const role = isFirstAccount ? 'admin' : 'client';
-
     const user = await User.create({
         name,
         email,
         password,
-        role,
+        role: 'client',
         phone,
         company,
     });
@@ -46,6 +65,17 @@ const registerUser = asyncHandler(async (req, res) => {
     if (user) {
         const accessToken = generateAccessToken(user._id);
         const refreshToken = generateRefreshToken(user._id);
+
+        res.cookie('refreshToken', refreshToken, {
+            ...refreshCookieOptions,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        if (process.env.SEND_LOGIN_NOTIFICATION_EMAILS === 'true') {
+            await safeSend(sendLoginNotificationEmail({ user }), 'Login notification');
+        }
+
+        await safeSend(sendWelcomeEmail({ user }), 'Welcome');
 
         res.status(201).json({
             success: true,
@@ -63,8 +93,13 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
-    const email = (req.body.email || '').trim().toLowerCase();
-    const password = String(req.body.password || '');
+    if (typeof req.body.email !== 'string' || typeof req.body.password !== 'string') {
+        res.status(400);
+        throw new Error('Email and password are required');
+    }
+
+    const email = req.body.email.trim().toLowerCase();
+    const password = req.body.password;
 
     if (!email || !password) {
         res.status(400);
@@ -85,6 +120,11 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
+
+    res.cookie('refreshToken', refreshToken, {
+        ...refreshCookieOptions,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     res.json({
         success: true,
@@ -143,9 +183,9 @@ const changePassword = asyncHandler(async (req, res) => {
         throw new Error('Current password is incorrect');
     }
 
-    if (newPassword.length < 6) {
+    if (!isStrongPassword(newPassword)) {
         res.status(400);
-        throw new Error('New password must be at least 6 characters');
+        throw new Error('New password must be at least 8 characters and include uppercase letters and numbers');
     }
 
     user.password = newPassword;
@@ -158,55 +198,67 @@ const changePassword = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/forgot-password
 // @access  Public
 const forgotPassword = asyncHandler(async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
+    if (typeof req.body.email !== 'string') {
+        res.status(400);
+        throw new Error('Email is required');
+    }
+
+    const email = req.body.email.trim().toLowerCase();
+    const user = await User.findOne({ email });
     if (!user) {
         res.status(404);
         throw new Error('No account with that email');
     }
 
-    const resetToken = user.getResetPasswordToken();
-    await user.save({ validateBeforeSave: false });
+    const otp = await generateOtp({ email, purpose: 'password-reset' });
+    await safeSend(sendOtpEmail({ email, otp, purpose: 'password reset' }), 'Forgot password OTP');
 
-    // In production, send email with reset link
-    // For now, return the token (dev only)
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?email=${encodeURIComponent(email)}`;
 
     res.json({
         success: true,
-        message: 'Password reset link sent to email',
-        // Remove resetUrl in production — dev convenience only
-        ...(process.env.NODE_ENV === 'development' && { resetUrl }),
+        message: 'Password reset OTP sent to email',
+        resetUrl,
+        ...(process.env.NODE_ENV === 'development' && { otp }),
     });
 });
 
 // @desc    Reset password
-// @route   POST /api/auth/reset-password/:token
+// @route   POST /api/auth/reset-password
 // @access  Public
 const resetPassword = asyncHandler(async (req, res) => {
-    const resetPasswordToken = crypto
-        .createHash('sha256')
-        .update(req.params.token)
-        .digest('hex');
+    if (typeof req.body.email !== 'string' || typeof req.body.password !== 'string') {
+        res.status(400);
+        throw new Error('Email and password are required');
+    }
 
-    const user = await User.findOne({
-        resetPasswordToken,
-        resetPasswordExpires: { $gt: Date.now() },
-    });
+    const email = req.body.email.trim().toLowerCase();
+    const otp = req.body.otp || req.params.token;
+    const password = req.body.password;
+
+    const isValid = await verifyOtp({ email, otp, purpose: 'password-reset' });
+
+    const user = await User.findOne({ email });
 
     if (!user) {
         res.status(400);
-        throw new Error('Invalid or expired reset token');
+        throw new Error('Invalid or expired reset request');
     }
 
-    if (req.body.password.length < 6) {
+    if (!isValid) {
         res.status(400);
-        throw new Error('Password must be at least 6 characters');
+        throw new Error('Invalid or expired OTP');
     }
 
-    user.password = req.body.password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
+    if (!isStrongPassword(password)) {
+        res.status(400);
+        throw new Error('Password must be at least 8 characters and include uppercase letters and numbers');
+    }
+
+    user.password = password;
     await user.save();
+
+    await invalidateOtps({ email, purpose: 'password-reset' });
 
     res.json({ success: true, message: 'Password reset successful' });
 });
@@ -215,7 +267,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/refresh
 // @access  Public
 const refreshTokenHandler = asyncHandler(async (req, res) => {
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
     if (!refreshToken) {
         res.status(400);
         throw new Error('Refresh token is required');
@@ -229,6 +281,11 @@ const refreshTokenHandler = asyncHandler(async (req, res) => {
             throw new Error('Invalid refresh token');
         }
         const accessToken = generateAccessToken(user._id);
+        const newRefreshToken = generateRefreshToken(user._id);
+        res.cookie('refreshToken', newRefreshToken, {
+            ...refreshCookieOptions,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
         res.json({ success: true, accessToken });
     } catch (error) {
         res.status(401);

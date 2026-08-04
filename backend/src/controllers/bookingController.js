@@ -1,6 +1,15 @@
 const Booking = require('../models/Booking');
 const Notification = require('../models/Notification');
 const asyncHandler = require('../middleware/asyncHandler');
+const { sendBookingEmails } = require('../services/emailService');
+
+const safeSend = async (task) => {
+    try {
+        await task;
+    } catch (error) {
+        console.error('Booking email delivery failed:', error.message);
+    }
+};
 
 // @desc    Create booking
 // @route   POST /api/bookings
@@ -16,6 +25,19 @@ const createBooking = asyncHandler(async (req, res) => {
     }
 
     const booking = await Booking.create(bookingData);
+
+    await safeSend(sendBookingEmails({
+        booking: {
+            name,
+            email,
+            phone,
+            service,
+            date,
+            time,
+            message,
+        },
+    }));
+
     res.status(201).json({ success: true, data: booking });
 });
 

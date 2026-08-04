@@ -24,7 +24,7 @@ const sidebarLinks = [
     { label: 'Pricing', icon: HiTag, href: '/admin/pricing' },
     { label: 'Bookings', icon: HiCalendar, href: '/admin/bookings' },
     { label: 'Messages', icon: HiMail, href: '/admin/messages' },
-    { label: 'Newsletter', icon: HiMail, href: '/admin/newsletter' },
+    { label: 'Email Management', icon: HiMail, href: '/admin/newsletter' },
     { label: 'Payments', icon: HiCurrencyDollar, href: '/admin/payments' },
     { label: 'Users', icon: HiUsers, href: '/admin/users' },
     { label: 'Analytics', icon: HiChartBar, href: '/admin/analytics' },

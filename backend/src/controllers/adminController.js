@@ -3,6 +3,7 @@ const Project = require('../models/Project');
 const Invoice = require('../models/Invoice');
 const asyncHandler = require('../middleware/asyncHandler');
 const crypto = require('crypto');
+const { sendClientCredentialsEmail } = require('../services/emailService');
 
 // @desc    Get all clients
 // @route   GET /api/admin/clients
@@ -67,7 +68,14 @@ const getClientById = asyncHandler(async (req, res) => {
 const createClient = asyncHandler(async (req, res) => {
     const { name, email, phone, company } = req.body;
 
-    const userExists = await User.findOne({ email });
+    if (typeof name !== 'string' || typeof email !== 'string') {
+        res.status(400);
+        throw new Error('Name and email are required');
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const userExists = await User.findOne({ email: normalizedEmail });
     if (userExists) {
         res.status(400);
         throw new Error('User with this email already exists');
@@ -77,19 +85,22 @@ const createClient = asyncHandler(async (req, res) => {
     const tempPassword = crypto.randomBytes(8).toString('hex');
 
     const client = await User.create({
-        name,
-        email,
+        name: name.trim(),
+        email: normalizedEmail,
         phone,
         company,
         password: tempPassword,
         role: 'client',
+        mustResetPassword: true,
     });
 
-    // In production, send welcome email with temp password
+    await sendClientCredentialsEmail({ user: client, tempPassword }).catch((error) => {
+        console.error('Client credentials email failed:', error.message);
+    });
+
     res.status(201).json({
         success: true,
         data: client,
-        // Dev only — remove in production
         ...(process.env.NODE_ENV === 'development' && { tempPassword }),
     });
 });

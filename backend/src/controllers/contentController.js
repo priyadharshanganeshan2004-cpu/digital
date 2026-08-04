@@ -87,6 +87,16 @@ const getBlogPostById = asyncHandler(async (req, res) => {
   res.json({ success: true, data: post });
 });
 
+const getBlogPostBySlug = asyncHandler(async (req, res) => {
+  const slug = req.params.slug;
+  const post = await BlogPost.findOne({ slug, isPublished: true });
+  if (!post) {
+    res.status(404);
+    throw new Error('Blog post not found');
+  }
+  res.json({ success: true, data: post });
+});
+
 const createBlogPost = asyncHandler(async (req, res) => {
   const { title, excerpt, content, category, author, readTime, color, imageUrl, isPublished, isFeatured, sortOrder } = req.body;
 
@@ -155,6 +165,7 @@ module.exports = {
   deletePortfolioItem,
   getBlogPosts,
   getBlogPostById,
+  getBlogPostBySlug,
   createBlogPost,
   updateBlogPost,
   deleteBlogPost,

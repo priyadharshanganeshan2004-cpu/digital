@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,6 +7,7 @@ import { HiMail, HiPhone, HiLocationMarker, HiClock, HiPaperAirplane } from 'rea
 import SEOHead from '@/components/ui/SEOHead';
 import { BUDGET_OPTIONS, SERVICES_DATA } from '@/lib/constants';
 import api from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
 
 const contactSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -23,7 +24,14 @@ type ContactFormData = z.infer<typeof contactSchema>;
 export default function ContactPage() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [submitError, setSubmitError] = useState('');
-    const [settings, setSettings] = useState<any>({});
+    const { data: settings = {} } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data || {};
+        },
+        staleTime: 5 * 60 * 1000,
+    });
     const contactInfo = [
         { icon: HiMail, label: 'Email', value: settings.contactEmail || 'hello@nexusdigital.com', href: settings.contactEmail ? `mailto:${settings.contactEmail}` : 'mailto:hello@nexusdigital.com' },
         { icon: HiPhone, label: 'Phone', value: settings.phone || '+1 (234) 567-890', href: settings.phone ? `tel:${settings.phone.replace(/\s+/g, '')}` : 'tel:+1234567890' },
@@ -31,17 +39,6 @@ export default function ContactPage() {
         { icon: HiClock, label: 'Working Hours', value: settings.workingHours || 'Mon - Fri: 9:00 AM - 6:00 PM', href: null },
     ];
 
-    useEffect(() => {
-        const loadSettings = async () => {
-            try {
-                const { data } = await api.get('/cms/settings');
-                setSettings(data.data || {});
-            } catch {
-                setSettings({});
-            }
-        };
-        loadSettings();
-    }, []);
     const {
         register,
         handleSubmit,

@@ -1,5 +1,14 @@
 const Lead = require('../models/Lead');
 const asyncHandler = require('../middleware/asyncHandler');
+const { sendContactEmails } = require('../services/emailService');
+
+const safeSend = async (task) => {
+    try {
+        await task;
+    } catch (error) {
+        console.error('Lead email delivery failed:', error.message);
+    }
+};
 
 // @desc    Submit a new contact form (creates a lead)
 // @route   POST /api/leads
@@ -20,6 +29,18 @@ const createLead = asyncHandler(async (req, res) => {
         budget,
         message,
     });
+
+    await safeSend(sendContactEmails({
+        lead: {
+            name,
+            company,
+            email,
+            phone,
+            service,
+            budget,
+            message,
+        },
+    }));
 
     res.status(201).json({
         success: true,

@@ -1,29 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiSearch, HiExternalLink, HiEye } from 'react-icons/hi';
 import SectionHeading from '@/components/ui/SectionHeading';
 import SEOHead from '@/components/ui/SEOHead';
 import CTASection from '@/components/home/CTASection';
 import api from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
 
 const categories = ['All', 'Website', 'E-commerce', 'Branding', 'SEO', 'Social Media', 'Mobile App'];
 
 export default function PortfolioPage() {
-    const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
     const [activeCategory, setActiveCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
 
-    useEffect(() => {
-        const loadPortfolio = async () => {
-            try {
-                const { data } = await api.get('/cms/portfolio');
-                setPortfolioItems(data.data || []);
-            } catch {
-                setPortfolioItems([]);
-            }
-        };
-        loadPortfolio();
-    }, []);
+    const { data: portfolioItems = [] } = useQuery({
+        queryKey: ['cms-portfolio'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/portfolio');
+            return data.data || [];
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
     const filtered = portfolioItems
         .filter((item) => activeCategory === 'All' || item.category === activeCategory)

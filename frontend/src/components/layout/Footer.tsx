@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fa';
 import { APP_NAME } from '@/lib/constants';
 import { useState } from 'react';
+import emailApi from '@/services/emailApi';
 
 const footerLinks = {
     services: [
@@ -51,13 +52,24 @@ const socialLinks = [
 export default function Footer() {
     const [email, setEmail] = useState('');
     const [isSubscribed, setIsSubscribed] = useState(false);
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubscribe = (e: React.FormEvent) => {
+    const handleSubscribe = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (email) {
+        if (!email) return;
+
+        try {
+            setError('');
+            setIsLoading(true);
+            await emailApi.subscribeNewsletter({ email, source: 'footer' });
             setIsSubscribed(true);
             setEmail('');
             setTimeout(() => setIsSubscribed(false), 3000);
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Subscription failed. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -82,6 +94,7 @@ export default function Footer() {
                         <p className="text-dark-400 mb-8">
                             Subscribe to our newsletter for the latest digital marketing insights, tips, and exclusive offers.
                         </p>
+                        {error && <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">{error}</div>}
                         <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                             <input
                                 type="email"
@@ -93,9 +106,10 @@ export default function Footer() {
                             />
                             <button
                                 type="submit"
-                                className="btn-primary whitespace-nowrap"
+                                disabled={isLoading}
+                                className="btn-primary whitespace-nowrap disabled:opacity-60"
                             >
-                                {isSubscribed ? '✓ Subscribed!' : 'Subscribe'}
+                                {isLoading ? 'Subscribing...' : isSubscribed ? '✓ Subscribed!' : 'Subscribe'}
                             </button>
                         </form>
                     </div>

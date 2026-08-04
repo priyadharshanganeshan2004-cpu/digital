@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
+const mongoSanitize = require('./middleware/mongoSanitize');
 
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
@@ -19,14 +20,15 @@ const messageRoutes = require('./routes/messageRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const cmsRoutes = require('./routes/cmsRoutes');
+const emailRoutes = require('./routes/emailRoutes');
 
 const app = express();
-app.set('trust proxy', 1);
 
 // ── Security & Parsing ──────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(mongoSanitize());
 app.set('trust proxy', 1);
 
 const allowedOrigins = [
@@ -98,6 +100,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/leads', contactLimiter, leadRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/cms', apiLimiter, cmsRoutes);
+app.use('/api/email', emailRoutes);
 
 app.use('/api/admin', apiLimiter, adminRoutes);
 app.use('/api/projects', apiLimiter, projectRoutes);

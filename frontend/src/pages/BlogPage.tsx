@@ -1,29 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { HiSearch, HiClock, HiUser, HiArrowRight, HiHeart } from 'react-icons/hi';
 import SectionHeading from '@/components/ui/SectionHeading';
 import SEOHead from '@/components/ui/SEOHead';
 import api from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
 
 const categories = ['All', 'SEO', 'Marketing', 'Design', 'Development', 'Social Media', 'Branding'];
 
 export default function BlogPage() {
-    const [blogPosts, setBlogPosts] = useState<any[]>([]);
     const [activeCategory, setActiveCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
 
-    useEffect(() => {
-        const loadBlogPosts = async () => {
-            try {
-                const { data } = await api.get('/cms/blog');
-                setBlogPosts(data.data || []);
-            } catch {
-                setBlogPosts([]);
-            }
-        };
-        loadBlogPosts();
-    }, []);
+    const { data: blogPosts = [] } = useQuery({
+        queryKey: ['cms-blog'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/blog');
+            return data.data || [];
+        },
+        staleTime: 5 * 60 * 1000,
+    });
 
     const filtered = blogPosts
         .filter((post) => activeCategory === 'All' || post.category === activeCategory)
@@ -103,7 +100,7 @@ export default function BlogPage() {
                                 className="group bg-white rounded-2xl overflow-hidden border border-gray-100 card-hover"
                             >
                                 <Link to={`/blog/${post.slug}`}>
-                                    <div className={`h-48 bg-gradient-to-br ${post.color || 'from-blue-500 to-indigo-600'} relative`}>
+                                    <div className="h-48 relative" style={{ backgroundImage: `linear-gradient(135deg, ${post.color || '#3b82f6'}, #4f46e5)` }}>
                                         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
                                         <div className="absolute inset-0 flex items-center justify-center text-white/30 text-6xl font-heading font-bold">
                                             {post.title.slice(0, 1)}

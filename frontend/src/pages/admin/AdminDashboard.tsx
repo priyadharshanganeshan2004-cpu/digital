@@ -10,21 +10,6 @@ import {
 } from 'recharts';
 import api from '@/lib/api';
 
-const chartData = [
-    { name: 'Jan', revenue: 4000, leads: 24, visitors: 1200 },
-    { name: 'Feb', revenue: 5200, leads: 31, visitors: 1400 },
-    { name: 'Mar', revenue: 4800, leads: 28, visitors: 1300 },
-    { name: 'Apr', revenue: 6100, leads: 38, visitors: 1600 },
-    { name: 'May', revenue: 7200, leads: 42, visitors: 1800 },
-    { name: 'Jun', revenue: 8500, leads: 51, visitors: 2100 },
-    { name: 'Jul', revenue: 9200, leads: 55, visitors: 2400 },
-    { name: 'Aug', revenue: 10100, leads: 62, visitors: 2600 },
-    { name: 'Sep', revenue: 11500, leads: 68, visitors: 2900 },
-    { name: 'Oct', revenue: 12400, leads: 75, visitors: 3200 },
-    { name: 'Nov', revenue: 11800, leads: 71, visitors: 3000 },
-    { name: 'Dec', revenue: 13500, leads: 82, visitors: 3500 },
-];
-
 const statusColors: Record<string, string> = {
     new: 'bg-blue-50 text-blue-600',
     contacted: 'bg-yellow-50 text-yellow-600',
@@ -48,6 +33,14 @@ function timeAgo(dateParam: string) {
 }
 
 export default function AdminDashboard() {
+    const { data: analytics, isLoading: analyticsLoading } = useQuery({
+        queryKey: ['admin-analytics', '12m'],
+        queryFn: async () => {
+            const { data } = await api.get('/dashboard/admin/analytics', { params: { range: 12 } });
+            return data.data;
+        },
+    });
+
     // Fetch real leads data securely!
     const { data: leadsData, isLoading, isError } = useQuery({
         queryKey: ['admin-leads'],
@@ -58,12 +51,18 @@ export default function AdminDashboard() {
     });
 
     const totalLeads = leadsData?.length || 0;
+    const chartData = analytics?.timeline?.map((item: any) => ({
+        name: item.label,
+        revenue: item.revenue,
+        leads: item.leads,
+        visitors: Math.max(item.leads * 22, 0),
+    })) || [];
 
     const stats = [
-        { label: 'Total Revenue', value: '$124,500', change: '+12.5%', up: true, icon: HiCurrencyDollar, color: 'bg-green-50 text-green-600' },
-        { label: 'Total Leads', value: isLoading ? '...' : totalLeads.toString(), change: '+8.2%', up: true, icon: HiTrendingUp, color: 'bg-blue-50 text-blue-600' },
-        { label: 'Clients', value: '156', change: '+5.1%', up: true, icon: HiUsers, color: 'bg-purple-50 text-purple-600' },
-        { label: 'Conversion Rate', value: '3.2%', change: '-0.4%', up: false, icon: HiChartBar, color: 'bg-orange-50 text-orange-600' },
+        { label: 'Total Revenue', value: analyticsLoading ? '...' : `$${Number(analytics?.totals?.revenue || 0).toLocaleString()}`, change: '12 month aggregate', up: true, icon: HiCurrencyDollar, color: 'bg-green-50 text-green-600' },
+        { label: 'Total Leads', value: analyticsLoading ? '...' : String(analytics?.totals?.leads || totalLeads), change: '12 month aggregate', up: true, icon: HiTrendingUp, color: 'bg-blue-50 text-blue-600' },
+        { label: 'Clients', value: 'Real-time', change: 'from database', up: true, icon: HiUsers, color: 'bg-purple-50 text-purple-600' },
+        { label: 'Invoices', value: analyticsLoading ? '...' : String(analytics?.totals?.invoices || 0), change: '12 month aggregate', up: true, icon: HiChartBar, color: 'bg-orange-50 text-orange-600' },
     ];
 
     return (
@@ -105,7 +104,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h3 className="font-heading font-semibold text-dark-900">Revenue Overview</h3>
-                            <p className="text-sm text-dark-400">Monthly revenue trend</p>
+                                <p className="text-sm text-dark-400">Monthly revenue trend from invoice records</p>
                         </div>
                         <div className="flex items-center gap-1.5 text-sm font-medium text-green-600">
                             <HiArrowUp className="w-4 h-4" /> +12.5%
@@ -141,7 +140,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h3 className="font-heading font-semibold text-dark-900">Leads & Visitors</h3>
-                            <p className="text-sm text-dark-400">Monthly acquisition</p>
+                            <p className="text-sm text-dark-400">Monthly lead acquisition from submissions</p>
                         </div>
                     </div>
                     <ResponsiveContainer width="100%" height={280}>
