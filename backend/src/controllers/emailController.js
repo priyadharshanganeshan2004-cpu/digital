@@ -161,14 +161,20 @@ const resendEmail = asyncHandler(async (req, res) => {
 });
 
 const sendCampaign = asyncHandler(async (req, res) => {
-    const results = await sendNewsletterCampaign({
-        subject: req.body.subject.trim(),
-        message: req.body.message.trim(),
-        ctaText: req.body.ctaText,
-        ctaUrl: req.body.ctaUrl,
-    });
+    const subject = req.body.subject.trim();
+    const message = req.body.message.trim();
+    const ctaText = req.body.ctaText;
+    const ctaUrl = req.body.ctaUrl;
 
-    res.json({ success: true, count: results.length, data: results, message: 'Newsletter campaign sent' });
+    // Count recipients to return an immediate queued response
+    const recipientCount = await NewsletterSubscriber.countDocuments({ status: 'subscribed' });
+
+    // Kick off campaign send in background — do not block the HTTP response
+    sendNewsletterCampaign({ subject, message, ctaText, ctaUrl })
+        .then((results) => console.log(`Campaign send completed: ${results.length} processed`))
+        .catch((err) => console.error('Campaign send failed:', err));
+
+    res.json({ success: true, count: recipientCount, message: 'Newsletter campaign queued' });
 });
 
 module.exports = {

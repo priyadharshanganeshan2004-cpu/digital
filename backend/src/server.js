@@ -1,4 +1,13 @@
 require('dotenv').config();
+// Prefer IPv4 for outbound DNS resolution to avoid ENETUNREACH on hosts without IPv6 egress
+try {
+    const dns = require('node:dns');
+    if (typeof dns.setDefaultResultOrder === 'function') {
+        dns.setDefaultResultOrder('ipv4first');
+    }
+} catch (err) {
+    // ignore if DNS API not available
+}
 console.log('Loaded MONGO_URI:', process.env.MONGO_URI ? process.env.MONGO_URI.replace(/:([^@]+)@/, ':****@') : 'undefined');
 const app = require('./app');
 const connectDB = require('./config/db');

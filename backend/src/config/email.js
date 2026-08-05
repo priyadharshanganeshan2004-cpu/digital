@@ -18,6 +18,16 @@ const smtpTransport = smtpConfigured
             user: SMTP_USER,
             pass: SMTP_PASS,
         },
+        // Force IPv4 family to avoid ENETUNREACH when host environment lacks IPv6 egress
+        family: 4,
+        // Reuse connections for multiple messages to reduce overhead
+        pool: true,
+        maxConnections: Number(process.env.EMAIL_MAX_CONNECTIONS || 5),
+        maxMessages: Number(process.env.EMAIL_MAX_MESSAGES || 100),
+        // Timeouts (ms) to fail fast and avoid long blocking waits
+        connectionTimeout: Number(process.env.EMAIL_CONNECTION_TIMEOUT || 10000),
+        greetingTimeout: Number(process.env.EMAIL_GREETING_TIMEOUT || 10000),
+        socketTimeout: Number(process.env.EMAIL_SOCKET_TIMEOUT || 15000),
     })
     : null;
 

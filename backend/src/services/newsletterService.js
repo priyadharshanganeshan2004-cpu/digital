@@ -1,5 +1,6 @@
 const NewsletterSubscriber = require('../models/NewsletterSubscriber');
 const { sendNewsletterConfirmationEmail, sendNewsletterCampaignEmail } = require('./emailService');
+const pLimit = require('p-limit');
 
 const subscribeNewsletter = async ({ email, name = '', source = 'website' }) => {
     const normalizedEmail = email.trim().toLowerCase();
@@ -44,17 +45,22 @@ const unsubscribeNewsletter = async ({ email }) => {
 
 const sendNewsletterCampaign = async ({ subject, message, ctaText, ctaUrl }) => {
     const subscribers = await NewsletterSubscriber.find({ status: 'subscribed' }).sort({ createdAt: -1 });
-    const results = [];
 
-    for (const subscriber of subscribers) {
-        try {
-            const result = await sendNewsletterCampaignEmail({ subscriber, subject, message, ctaText, ctaUrl });
-            results.push({ email: subscriber.email, status: 'sent', result });
-        } catch (error) {
-            results.push({ email: subscriber.email, status: 'failed', error: error.message });
-        }
-    }
+    const concurrency = Number(process.env.EMAIL_SEND_CONCURRENCY || 5);
+    const limit = pLimit(concurrency);
 
+    const tasks = subscribers.map((subscriber) =>
+        limit(async () => {
+            try {
+                const result = await sendNewsletterCampaignEmail({ subscriber, subject, message, ctaText, ctaUrl });
+                return { email: subscriber.email, status: 'sent', result };
+            } catch (error) {
+                return { email: subscriber.email, status: 'failed', error: error.message };
+            }
+        })
+    );
+
+    const results = await Promise.all(tasks);
     return results;
 };
 
