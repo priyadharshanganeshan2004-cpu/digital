@@ -3,6 +3,11 @@ const BlogPost = require('../models/BlogPost');
 const asyncHandler = require('../middleware/asyncHandler');
 
 const getPortfolioItems = asyncHandler(async (req, res) => {
+  const items = await PortfolioItem.find().sort({ sortOrder: 1, createdAt: -1 });
+  res.json({ success: true, count: items.length, data: items });
+});
+
+const getPortfolioItemsPublic = asyncHandler(async (req, res) => {
   const items = await PortfolioItem.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
   res.json({ success: true, count: items.length, data: items });
 });
@@ -74,6 +79,11 @@ const deletePortfolioItem = asyncHandler(async (req, res) => {
 });
 
 const getBlogPosts = asyncHandler(async (req, res) => {
+  const posts = await BlogPost.find().sort({ sortOrder: 1, createdAt: -1 });
+  res.json({ success: true, count: posts.length, data: posts });
+});
+
+const getBlogPostsPublic = asyncHandler(async (req, res) => {
   const posts = await BlogPost.find({ isPublished: true }).sort({ sortOrder: 1, createdAt: -1 });
   res.json({ success: true, count: posts.length, data: posts });
 });

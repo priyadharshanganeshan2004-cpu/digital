@@ -1,4 +1,9 @@
+const dns = require('node:dns');
 const nodemailer = require('nodemailer');
+
+if (typeof dns.setDefaultResultOrder === 'function') {
+    dns.setDefaultResultOrder('ipv4first');
+}
 
 const EMAIL_FROM = process.env.EMAIL_FROM || 'NexusDigital <12e26c.abinaw@gmail.com>';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';

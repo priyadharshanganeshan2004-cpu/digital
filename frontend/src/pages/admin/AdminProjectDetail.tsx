@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -32,12 +32,16 @@ export default function AdminProjectDetail() {
         queryKey: ['admin-project-detail', id],
         queryFn: async () => {
             const { data } = await api.get(`/projects/${id}`);
-            // sync local states
-            setProgress(data.data.progress);
-            setStatus(data.data.status);
             return data.data;
         },
     });
+
+    useEffect(() => {
+        if (project) {
+            setProgress(project.progress);
+            setStatus(project.status);
+        }
+    }, [project]);
 
     const updateProjectMutation = useMutation({
         mutationFn: (updatedFields: Partial<Project>) => api.put(`/projects/${id}`, updatedFields),

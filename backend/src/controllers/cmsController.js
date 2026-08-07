@@ -70,7 +70,7 @@ const updateSiteSettings = asyncHandler(async (req, res) => {
 });
 
 const getServices = asyncHandler(async (req, res) => {
-  const services = await Service.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
+  const services = await Service.find().sort({ sortOrder: 1, createdAt: -1 });
   res.json({ success: true, count: services.length, data: services });
 });
 
@@ -147,7 +147,7 @@ const deleteService = asyncHandler(async (req, res) => {
 });
 
 const getPricingPlans = asyncHandler(async (req, res) => {
-  const plans = await PricingPlan.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
+  const plans = await PricingPlan.find().sort({ sortOrder: 1, createdAt: -1 });
   res.json({ success: true, count: plans.length, data: plans });
 });
 

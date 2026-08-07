@@ -148,6 +148,34 @@ const sendLoginNotificationEmail = async ({ user }) => {
     });
 };
 
+const sendClientCredentialsEmail = async ({ user, tempPassword }) => {
+    const brand = await getBrandContext();
+    const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/login`;
+    const html = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827;">
+            <h1>Welcome to ${brand.siteName || 'our agency'}</h1>
+            <p>Hi ${user.name || user.email},</p>
+            <p>Your account has been created. Use the one-time temporary password below to log in:</p>
+            <p style="font-size: 1.1rem; font-weight: 600;">${tempPassword}</p>
+            <p>Please visit the login page and change your password after signing in.</p>
+            <p><a href="${loginUrl}" style="color: #4f46e5; text-decoration: none;">Log in to your account</a></p>
+            <p>Thanks,<br/>The ${brand.siteName || 'team'}</p>
+        </div>
+    `;
+
+    const text = `Welcome to ${brand.siteName || 'our agency'}\n\nHi ${user.name || user.email},\n\nYour temporary password is: ${tempPassword}\n\nLog in here: ${loginUrl}\n\nPlease change your password after signing in.`;
+
+    return sendAndLog({
+        to: user.email,
+        subject: `Your temporary login credentials for ${brand.siteName || 'our agency'}`,
+        html,
+        text,
+        templateKey: 'client-credentials',
+        category: 'security',
+        payload: { user, tempPassword },
+    });
+};
+
 const sendContactEmails = async ({ lead }) => {
     const brand = await getBrandContext();
     const customerTemplate = buildContactEmail({ brand, lead, mode: 'customer' });
