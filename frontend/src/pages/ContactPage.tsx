@@ -33,7 +33,7 @@ export default function ContactPage() {
         staleTime: 5 * 60 * 1000,
     });
     const contactInfo = [
-        { icon: HiMail, label: 'Email', value: settings.contactEmail || 'priyadharshanganeshan2004@gmail.com', href: settings.contactEmail ? `mailto:${settings.contactEmail}` : 'mailto:hello@nexusdigital.com' },
+        { icon: HiMail, label: 'Email', value: settings.contactEmail || 'priyadharshanganeshan2004@gmail.com', href: settings.contactEmail ? `mailto:${settings.contactEmail}` : 'mailto:priyadharshanganeshan2004@gmail.com' },
         { icon: HiPhone, label: 'Phone', value: settings.phone || '+19 9080399984', href: settings.phone ? `tel:${settings.phone.replace(/\s+/g, '')}` : 'tel:+1234567890' },
         { icon: HiLocationMarker, label: 'Address', value: settings.address || '123 Innovation Drive, San Francisco, CA 94105', href: null },
         { icon: HiClock, label: 'Working Hours', value: settings.workingHours || 'Mon - Fri: 9:00 AM - 6:00 PM', href: null },

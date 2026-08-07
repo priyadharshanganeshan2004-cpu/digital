@@ -22,7 +22,7 @@ const seedDefaultCMSData = async () => {
             siteName: 'NexusDigital',
             tagline: 'Growth-driven digital strategy',
             description: 'We help ambitious brands grow with strategy, design, web experiences, and measurable digital performance.',
-            contactEmail: 'hello@nexusdigital.com',
+            contactEmail: 'priyadharshanganeshan2004@gmail.com',
             phone: '+1 (555) 123-4567',
             address: '123 Business Avenue, New York, NY',
             seoTitle: 'NexusDigital | Digital Marketing Agency',

@@ -6,7 +6,7 @@ const initialState = {
   siteName: 'NexusDigital',
   tagline: 'Growth-driven digital strategy',
   description: '',
-  contactEmail: 'hello@nexusdigital.com',
+  contactEmail: 'priyadharshanganeshan2004@gmail.com',
   phone: '+1 (555) 123-4567',
   address: '123 Business Avenue, New York, NY',
   primaryColor: '#6366f1',

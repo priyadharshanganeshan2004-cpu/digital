@@ -131,9 +131,9 @@ export default function Footer() {
                             We're a team of digital strategists, creative designers, and marketing experts dedicated to transforming your online presence.
                         </p>
                         <div className="space-y-3">
-                            <a href="mailto:hello@nexusdigital.com" className="flex items-center gap-3 text-dark-400 hover:text-primary-400 transition-colors">
+                            <a href="mailto:priyadharshanganeshan2004@gmail.com" className="flex items-center gap-3 text-dark-400 hover:text-primary-400 transition-colors">
                                 <HiMail className="w-5 h-5" />
-                                <span className="text-sm">hello@nexusdigital.com</span>
+                                <span className="text-sm">priyadharshanganeshan2004@gmail.com</span>
                             </a>
                             <a href="tel:+1234567890" className="flex items-center gap-3 text-dark-400 hover:text-primary-400 transition-colors">
                                 <HiPhone className="w-5 h-5" />

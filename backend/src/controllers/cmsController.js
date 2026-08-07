@@ -12,7 +12,7 @@ const defaultSiteSettings = {
   faviconUrl: '',
   primaryColor: '#6366f1',
   accentColor: '#a855f7',
-  contactEmail: 'hello@nexusdigital.com',
+  contactEmail: 'priyadharshanganeshan2004@gmail.com',
   phone: '+1 (555) 123-4567',
   address: '123 Business Avenue, New York, NY',
   whatsapp: '',

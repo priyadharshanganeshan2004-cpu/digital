@@ -5,7 +5,7 @@ if (typeof dns.setDefaultResultOrder === 'function') {
     dns.setDefaultResultOrder('ipv4first');
 }
 
-const EMAIL_FROM = process.env.EMAIL_FROM || 'NexusDigital <12e26c.abinaw@gmail.com>';
+const EMAIL_FROM = process.env.EMAIL_FROM || 'NexusDigital <priyadharshanganeshan2004@gmail.com>';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const SMTP_HOST = process.env.SMTP_HOST || '';
 const SMTP_PORT = Number(process.env.SMTP_PORT || 587);

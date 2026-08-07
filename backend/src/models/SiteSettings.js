@@ -13,7 +13,7 @@ const siteSettingsSchema = new mongoose.Schema(
     faviconUrl: { type: String, default: '' },
     primaryColor: { type: String, default: '#6366f1' },
     accentColor: { type: String, default: '#a855f7' },
-    contactEmail: { type: String, default: 'hello@nexusdigital.com' },
+    contactEmail: { type: String, default: 'priyadharshanganeshan2004@gmail.com' },
     phone: { type: String, default: '+1 (555) 123-4567' },
     address: { type: String, default: '123 Business Avenue, New York, NY' },
     whatsapp: { type: String, default: '' },
