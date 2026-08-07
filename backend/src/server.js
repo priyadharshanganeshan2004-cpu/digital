@@ -23,7 +23,7 @@ const seedDefaultCMSData = async () => {
             tagline: 'Growth-driven digital strategy',
             description: 'We help ambitious brands grow with strategy, design, web experiences, and measurable digital performance.',
             contactEmail: 'priyadharshanganeshan2004@gmail.com',
-            phone: '+1 (555) 123-4567',
+            phone: '+91 9080399984',
             address: '123 Business Avenue, New York, NY',
             seoTitle: 'NexusDigital | Digital Marketing Agency',
             seoDescription: 'NexusDigital is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',

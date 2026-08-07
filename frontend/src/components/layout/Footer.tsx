@@ -135,9 +135,9 @@ export default function Footer() {
                                 <HiMail className="w-5 h-5" />
                                 <span className="text-sm">priyadharshanganeshan2004@gmail.com</span>
                             </a>
-                            <a href="tel:+1234567890" className="flex items-center gap-3 text-dark-400 hover:text-primary-400 transition-colors">
+                            <a href="tel:+919080399984" className="flex items-center gap-3 text-dark-400 hover:text-primary-400 transition-colors">
                                 <HiPhone className="w-5 h-5" />
-                                <span className="text-sm">+1 (234) 567-890</span>
+                                <span className="text-sm">+91 9080399984</span>
                             </a>
                             <div className="flex items-center gap-3 text-dark-400">
                                 <HiLocationMarker className="w-5 h-5 flex-shrink-0" />
