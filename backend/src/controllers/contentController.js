@@ -169,11 +169,13 @@ const deleteBlogPost = asyncHandler(async (req, res) => {
 
 module.exports = {
   getPortfolioItems,
+  getPortfolioItemsPublic,
   getPortfolioItemById,
   createPortfolioItem,
   updatePortfolioItem,
   deletePortfolioItem,
   getBlogPosts,
+  getBlogPostsPublic,
   getBlogPostById,
   getBlogPostBySlug,
   createBlogPost,
