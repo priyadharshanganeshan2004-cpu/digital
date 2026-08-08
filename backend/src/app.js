@@ -31,14 +31,12 @@ app.use(cookieParser());
 app.use(mongoSanitize());
 app.set('trust proxy', 1);
 
-const allowedOrigins = [
-    /^https:\/\/.*\.vercel\.app$/i,
-    /^http:\/\/localhost:(5173|3000)$/i,
-    /^https:\/\/digital-87kt\.onrender\.com$/i,
-    /^https:\/\/digital-87kt\.onrender\.app$/i,
-];
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 
-const isAllowedOrigin = (origin) => !origin || allowedOrigins.some((pattern) => pattern.test(origin));
+const isAllowedOrigin = (origin) => !origin || allowedOrigins.includes(origin);
 
 app.use(cors({
     origin: (origin, callback) => {

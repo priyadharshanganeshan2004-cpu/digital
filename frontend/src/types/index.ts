@@ -21,7 +21,6 @@ export interface AuthResponse {
     success: boolean;
     user: User;
     accessToken: string;
-    refreshToken: string;
 }
 
 // ── Projects ────────────────────────────────────────────────

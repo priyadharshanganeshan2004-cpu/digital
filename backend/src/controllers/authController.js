@@ -18,7 +18,7 @@ const isStrongPassword = (value) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test
 const refreshCookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     path: '/api/auth',
 };
 
@@ -80,7 +80,6 @@ const registerUser = asyncHandler(async (req, res) => {
         res.status(201).json({
             success: true,
             accessToken,
-            refreshToken,
             user,
         });
     } else {
@@ -129,9 +128,16 @@ const loginUser = asyncHandler(async (req, res) => {
     res.json({
         success: true,
         accessToken,
-        refreshToken,
         user,
     });
+});
+
+// @desc    Log out the current user
+// @route   POST /api/auth/logout
+// @access  Public
+const logoutUser = asyncHandler(async (req, res) => {
+    res.clearCookie('refreshToken', { path: '/api/auth' });
+    res.json({ success: true, message: 'Logged out' });
 });
 
 // @desc    Get current user profile
@@ -322,4 +328,5 @@ module.exports = {
     forgotPassword,
     resetPassword,
     refreshTokenHandler,
+    logoutUser,
 };
