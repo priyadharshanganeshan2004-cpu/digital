@@ -57,11 +57,9 @@ const logEmail = async ({ recipient, subject, templateKey, category, provider, s
 const sendAndLog = async ({ to, subject, html, text, templateKey = 'custom', category = 'general', payload = {}, replyTo, from }) => {
     const recipients = Array.isArray(to) ? to : [to];
     const provider = process.env.RESEND_API_KEY ? 'resend' : (process.env.SMTP_HOST ? 'smtp' : 'mock');
-    const brand = await getBrandContext();
-    const resolvedReplyTo = replyTo || brand.contactEmail;
 
     try {
-        const result = await sendMail({ to: recipients, subject, html, text, replyTo: resolvedReplyTo, from });
+        const result = await sendMail({ to: recipients, subject, html, text, replyTo, from });
         await logEmail({
             recipient: recipients.join(', '),
             subject,

@@ -10,7 +10,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     login: (email: string, password: string) => Promise<User>;
     register: (name: string, email: string, password: string) => Promise<User>;
-    logout: () => Promise<void>;
+    logout: () => void;
     updateUser: (user: User) => void;
 }
 
@@ -58,11 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return data.user;
     };
 
-    const logout = async () => {
-        try {
-            await api.post('/auth/logout');
-        } catch {
-        }
+    const logout = () => {
         clearAccessToken();
         setUser(null);
     };

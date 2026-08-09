@@ -18,17 +18,9 @@ const sanitizeValue = (value) => {
 };
 
 const mongoSanitize = () => (req, res, next) => {
-    if (req.body) req.body = sanitizeValue(req.body);
-    if (req.query) {
-        Object.keys(req.query).forEach((key) => {
-            req.query[key] = sanitizeValue(req.query[key]);
-        });
-    }
-    if (req.params) {
-        Object.keys(req.params).forEach((key) => {
-            req.params[key] = sanitizeValue(req.params[key]);
-        });
-    }
+    req.body = sanitizeValue(req.body);
+    req.query = sanitizeValue(req.query);
+    req.params = sanitizeValue(req.params);
     next();
 };
 
