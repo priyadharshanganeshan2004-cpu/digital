@@ -31,41 +31,64 @@ app.use(cookieParser());
 app.use(mongoSanitize());
 app.set('trust proxy', 1);
 
-const allowedOrigins = [
-    'https://digital-g5ogqxda4-digital-797b.vercel.app',
+// ── CORS Origin Allowlist ────────────────────────────────────
+//
+// Regex patterns are used instead of hard-coded strings so that
+// Vercel preview deployments work without manual env-var updates
+// on every new deploy.
+//
+// Pattern breakdown:
+//   • digital-[a-z0-9]+-digital-797b.vercel.app
+//       → Matches ONLY this project's Vercel preview URLs
+//         (e.g. digital-g5ogqxda4-digital-797b.vercel.app)
+//         NOT arbitrary *.vercel.app sites — intentionally scoped.
+//   • FRONTEND_URL env var → stable Vercel production alias
+//         (set this to your fixed production domain in Render)
+//   • ALLOWED_ORIGINS env var → comma-separated extra origins
+//         (safety-net fallback, include production URL here too)
+//
+const allowedOriginPatterns = [
+    // This project's Vercel preview deployments (scoped, not *.vercel.app)
+    // Covers BOTH hash previews (digital-abc123-digital-797b.vercel.app)
+    // AND branch previews  (digital-git-main-digital-797b.vercel.app)
+    // The slug between digital- and -digital-797b can contain letters, digits, AND hyphens.
+    /^https:\/\/digital-[a-z0-9-]+-digital-797b\.vercel\.app$/i,
+    // Stable Render backend self-origin (for health checks etc.)
+    /^https:\/\/digital-87kt\.onrender\.com$/i,
+    /^https:\/\/digital-87kt\.onrender\.app$/i,
+    // Local development
+    /^http:\/\/localhost:(5173|3000)$/i,
+];
+
+// Exact-match origins from env vars (stable production alias + extras)
+const allowedOriginExact = [
     process.env.FRONTEND_URL,
-    ...(process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000').split(','),
+    ...(process.env.ALLOWED_ORIGINS || '').split(','),
 ]
-    .filter(Boolean)
-    .map((origin) => origin.trim());
+    .map((o) => (o || '').trim())
+    .filter(Boolean);
 
-const isAllowedOrigin = (origin) => !origin || allowedOrigins.includes(origin);
+const isAllowedOrigin = (origin) =>
+    !origin ||
+    allowedOriginExact.includes(origin) ||
+    allowedOriginPatterns.some((pattern) => pattern.test(origin));
 
-app.use(cors({
+// FIX: Pass `false` (not an Error) for rejected origins so Express
+// returns a 403 instead of an unhandled-error 500 on OPTIONS preflight.
+const corsOptions = {
     origin: (origin, callback) => {
-        if (isAllowedOrigin(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
+        callback(null, isAllowedOrigin(origin));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+};
 
-app.options(/.*/, cors({
-    origin: (origin, callback) => {
-        if (isAllowedOrigin(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(cors(corsOptions));
+
+// Handle all OPTIONS preflight requests with the same config.
+// This must come BEFORE route definitions.
+app.options(/.*/, cors(corsOptions));
 
 app.use(helmet());
 app.use(compression());
@@ -116,6 +139,16 @@ app.get('/api/health', (req, res) => {
 });
 
 // ── Error Handling ──────────────────────────────────────────
+
+// Defense-in-depth: if any middleware ever throws a CORS error,
+// return a clean 403 instead of an Express 500.
+app.use((err, req, res, next) => {
+    if (err.message === 'Not allowed by CORS') {
+        return res.status(403).json({ success: false, message: 'Origin not allowed' });
+    }
+    next(err);
+});
+
 app.use(notFound);
 app.use(errorHandler);
 
