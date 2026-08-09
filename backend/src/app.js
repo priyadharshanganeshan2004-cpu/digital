@@ -31,10 +31,13 @@ app.use(cookieParser());
 app.use(mongoSanitize());
 app.set('trust proxy', 1);
 
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
+const allowedOrigins = [
+    'https://digital-g5ogqxda4-digital-797b.vercel.app',
+    process.env.FRONTEND_URL,
+    ...(process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000').split(','),
+]
+    .filter(Boolean)
+    .map((origin) => origin.trim());
 
 const isAllowedOrigin = (origin) => !origin || allowedOrigins.includes(origin);
 
