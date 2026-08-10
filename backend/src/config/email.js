@@ -1,11 +1,12 @@
-const dns = require('node:dns');
+﻿const dns = require('node:dns');
 const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 
 if (typeof dns.setDefaultResultOrder === 'function') {
     dns.setDefaultResultOrder('ipv4first');
 }
 
-const EMAIL_FROM = process.env.EMAIL_FROM || 'NexusDigital <onboarding@resend.dev>';
+const EMAIL_FROM = process.env.EMAIL_FROM || 'Scalax Labs <priyadharshanganeshan2004@gmail.com>';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const SMTP_HOST = process.env.SMTP_HOST || '';
 const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
@@ -37,6 +38,27 @@ const smtpTransport = smtpConfigured
     : null;
 
 const normalizeRecipients = (to) => (Array.isArray(to) ? to : [to]).filter(Boolean);
+
+const sendViaSendGrid = async ({ to, subject, html, text, replyTo, from = EMAIL_FROM }) => {
+    const sender = from;
+    const emailMatch = sender.match(/<([^>]+)>/);
+    const emailAddress = emailMatch ? emailMatch[1].trim() : sender.trim();
+    if (emailAddress !== 'priyadharshanganeshan2004@gmail.com') {
+        throw new Error(`From address ${sender} does not match verified SendGrid Single Sender (priyadharshanganeshan2004@gmail.com)`);
+    }
+
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+        to,
+        from: sender,
+        subject,
+        html,
+        text,
+    };
+    if (replyTo) msg.replyTo = replyTo;
+    const [response] = await sgMail.send(msg);
+    return { provider: 'sendgrid', messageId: response.headers['x-message-id'] || null };
+};
 
 const sendViaResend = async ({ to, subject, html, text, replyTo, from = EMAIL_FROM }) => {
     const response = await fetch('https://api.resend.com/emails', {
@@ -79,6 +101,10 @@ const sendViaSmtp = async ({ to, subject, html, text, replyTo, from = EMAIL_FROM
 };
 
 const sendMail = async (options) => {
+    if (process.env.SENDGRID_API_KEY) {
+        return sendViaSendGrid(options);
+    }
+
     if (RESEND_API_KEY) {
         return sendViaResend(options);
     }
@@ -95,7 +121,7 @@ const sendMail = async (options) => {
         };
     }
 
-    throw new Error('No email provider configured. Set RESEND_API_KEY or SMTP credentials.');
+    throw new Error('No email provider configured. Set SENDGRID_API_KEY, RESEND_API_KEY or SMTP credentials.');
 };
 
 module.exports = {

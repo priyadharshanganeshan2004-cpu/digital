@@ -1,6 +1,6 @@
-import type { NavLink } from '@/types';
+﻿import type { NavLink } from '@/types';
 
-export const APP_NAME = 'NexusDigital';
+export const APP_NAME = 'Scalax Labs';
 export const APP_TAGLINE = 'Growth-driven digital strategy';
 export const APP_DESCRIPTION = 'We help ambitious brands grow through strategy, design, and measurable digital performance.';
 
@@ -247,3 +247,4 @@ export const CLIENT_LOGOS = [
     { name: 'IronClad', initials: 'IC' },
     { name: 'SkyReach', initials: 'SR' },
 ];
+

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { HiLocationMarker, HiBriefcase, HiClock, HiArrowRight } from 'react-icons/hi';
 import SEOHead from '@/components/ui/SEOHead';
@@ -25,7 +25,7 @@ const perks = [
 export default function CareersPage() {
     return (
         <>
-            <SEOHead title="Careers" description="Join the NexusDigital team. We're looking for talented people who are passionate about digital marketing." canonical="/careers" />
+            <SEOHead title="Careers" description="Join the Scalax Labs Team. We're looking for talented people who are passionate about digital marketing." canonical="/careers" />
 
             <section className="relative pt-32 pb-16 bg-gradient-to-b from-primary-50/50 to-white">
                 <div className="container-custom">
@@ -42,7 +42,7 @@ export default function CareersPage() {
             {/* Perks */}
             <section className="section-padding bg-white pt-8">
                 <div className="container-custom">
-                    <h2 className="text-2xl font-heading font-bold text-dark-900 text-center mb-10">Why Work at NexusDigital</h2>
+                    <h2 className="text-2xl font-heading font-bold text-dark-900 text-center mb-10">Why Work at Scalax Labs</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-16">
                         {perks.map((perk, i) => (
                             <motion.div key={perk.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className="text-center p-4 rounded-2xl bg-gray-50 border border-gray-100">
@@ -80,3 +80,4 @@ export default function CareersPage() {
         </>
     );
 }
+

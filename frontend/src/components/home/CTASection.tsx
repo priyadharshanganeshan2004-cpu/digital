@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { HiArrowRight } from 'react-icons/hi';
 
@@ -35,7 +35,7 @@ export default function CTASection() {
                         </span>
                     </h2>
                     <p className="text-lg text-white/70 mb-10 max-w-xl mx-auto leading-relaxed">
-                        Join 150+ brands that chose NexusDigital to accelerate their growth. Let's discuss how we can help you achieve extraordinary results.
+                        Join 150+ brands that chose Scalax Labs to accelerate their growth. Let's discuss how we can help you achieve extraordinary results.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link
@@ -57,3 +57,4 @@ export default function CTASection() {
         </section>
     );
 }
+

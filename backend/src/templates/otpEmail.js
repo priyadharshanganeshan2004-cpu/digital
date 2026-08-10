@@ -1,4 +1,4 @@
-const { buildEmailLayout } = require('./_shared');
+﻿const { buildEmailLayout } = require('./_shared');
 
 const buildOtpEmail = ({ brand, email, otp, purpose = 'password reset' }) => {
     const content = buildEmailLayout({
@@ -21,7 +21,7 @@ const buildOtpEmail = ({ brand, email, otp, purpose = 'password reset' }) => {
     });
 
     return {
-        subject: `${purpose.charAt(0).toUpperCase() + purpose.slice(1)} code - ${brand.siteName || 'NexusDigital'}`,
+        subject: `${purpose.charAt(0).toUpperCase() + purpose.slice(1)} code - ${brand.siteName || 'Scalax Labs'}`,
         ...content,
     };
 };

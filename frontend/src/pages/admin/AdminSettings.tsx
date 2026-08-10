@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 
 const initialState = {
-  siteName: 'NexusDigital',
+  siteName: 'Scalax Labs',
   tagline: 'Growth-driven digital strategy',
   description: '',
   contactEmail: 'priyadharshanganeshan2004@gmail.com',
@@ -11,7 +11,7 @@ const initialState = {
   address: '123 Business Avenue, New York, NY',
   primaryColor: '#6366f1',
   accentColor: '#a855f7',
-  seoTitle: 'NexusDigital | Digital Marketing Agency',
+  seoTitle: 'Scalax Labs | Digital Marketing Agency',
   seoDescription: '',
   heroBadge: 'Digital growth partner for ambitious brands',
   heroTitle: 'Growth-driven digital strategy',
@@ -149,3 +149,4 @@ export default function AdminSettings() {
     </div>
   );
 }
+

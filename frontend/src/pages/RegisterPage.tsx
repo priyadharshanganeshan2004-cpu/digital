@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
@@ -51,7 +51,7 @@ export default function RegisterPage() {
 
     return (
         <>
-            <SEOHead title="Sign Up" description="Create your NexusDigital account." canonical="/register" />
+            <SEOHead title="Sign Up" description="Create your Scalax Labs account." canonical="/register" />
 
             <div className="min-h-screen flex">
                 {/* Left Panel */}
@@ -170,3 +170,4 @@ export default function RegisterPage() {
         </>
     );
 }
+

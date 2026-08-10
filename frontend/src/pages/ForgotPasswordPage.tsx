@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
@@ -30,7 +30,7 @@ export default function ForgotPasswordPage() {
 
     return (
         <>
-            <SEOHead title="Forgot Password" description="Reset your NexusDigital password." canonical="/forgot-password" />
+            <SEOHead title="Forgot Password" description="Reset your Scalax Labs password." canonical="/forgot-password" />
             <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md bg-white rounded-3xl p-8 shadow-xl shadow-gray-100/50 border border-gray-100">
                     <Link to="/" className="flex items-center gap-2 mb-8 justify-center">
@@ -77,3 +77,4 @@ export default function ForgotPasswordPage() {
         </>
     );
 }
+

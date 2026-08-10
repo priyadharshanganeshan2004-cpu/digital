@@ -1,10 +1,10 @@
-const SiteSettings = require('../models/SiteSettings');
+﻿const SiteSettings = require('../models/SiteSettings');
 const Service = require('../models/Service');
 const PricingPlan = require('../models/PricingPlan');
 const asyncHandler = require('../middleware/asyncHandler');
 
 const defaultSiteSettings = {
-  siteName: 'NexusDigital',
+  siteName: 'Scalax Labs',
   tagline: 'Growth-driven digital strategy',
   description:
     'We help ambitious brands grow with strategy, design, web experiences, and measurable digital performance.',
@@ -20,9 +20,9 @@ const defaultSiteSettings = {
   instagram: '',
   linkedin: '',
   youtube: '',
-  seoTitle: 'NexusDigital | Digital Marketing Agency',
+  seoTitle: 'Scalax Labs | Digital Marketing Agency',
   seoDescription:
-    'NexusDigital is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
+    'Scalax Labs is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
   heroBadge: 'Digital growth partner for ambitious brands',
   heroTitle: 'Growth-driven digital strategy',
   heroDescription:
@@ -234,3 +234,4 @@ module.exports = {
   deletePricingPlan,
   ensureSiteSettings,
 };
+

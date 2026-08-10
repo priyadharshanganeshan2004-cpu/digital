@@ -1,4 +1,4 @@
-const { buildEmailLayout } = require('./_shared');
+﻿const { buildEmailLayout } = require('./_shared');
 
 const buildWelcomeEmail = ({ brand, user, loginUrl }) => {
     const content = buildEmailLayout({
@@ -17,7 +17,7 @@ const buildWelcomeEmail = ({ brand, user, loginUrl }) => {
     });
 
     return {
-        subject: `Welcome to ${brand.siteName || 'NexusDigital'}`,
+        subject: `Welcome to ${brand.siteName || 'Scalax Labs'}`,
         ...content,
     };
 };

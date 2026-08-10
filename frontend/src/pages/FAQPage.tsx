@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { motion } from 'framer-motion';
 import SEOHead from '@/components/ui/SEOHead';
 import CTASection from '@/components/home/CTASection';
@@ -7,8 +7,8 @@ const faqCategories = ['General', 'Services', 'Pricing', 'Process', 'Support'];
 
 const faqs: Record<string, { q: string; a: string }[]> = {
     General: [
-        { q: 'What services does NexusDigital offer?', a: 'We offer a full spectrum of digital marketing services including web development, SEO, social media marketing, Google Ads, content marketing, branding, mobile app development, and more.' },
-        { q: 'How long have you been in business?', a: 'NexusDigital has been operating for over 12 years, serving 150+ clients worldwide across various industries.' },
+        { q: 'What services does Scalax Labs offer?', a: 'We offer a full spectrum of digital marketing services including web development, SEO, social media marketing, Google Ads, content marketing, branding, mobile app development, and more.' },
+        { q: 'How long have you been in business?', a: 'Scalax Labs has been operating for over 12 years, serving 150+ clients worldwide across various industries.' },
         { q: 'Do you work with international clients?', a: 'Yes! We work with clients globally. Our team is equipped to handle projects across different time zones and markets.' },
         { q: 'What industries do you specialize in?', a: 'We have experience across tech, healthcare, e-commerce, finance, real estate, education, and more. Our strategies are customized for each industry.' },
     ],
@@ -100,3 +100,4 @@ export default function FAQPage() {
         </>
     );
 }
+

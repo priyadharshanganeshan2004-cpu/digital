@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 
@@ -23,7 +23,7 @@ const emptyForm: BlogPost = {
   excerpt: '',
   content: '',
   category: 'Marketing',
-  author: 'NexusDigital Team',
+  author: 'Scalax Labs Team',
   readTime: 5,
   color: 'from-blue-500 to-indigo-600',
   imageUrl: '',
@@ -180,3 +180,4 @@ export default function AdminBlog() {
     </div>
   );
 }
+

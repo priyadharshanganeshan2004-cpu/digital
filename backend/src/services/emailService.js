@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+﻿const crypto = require('crypto');
 const EmailLog = require('../models/EmailLog');
 const EmailTemplate = require('../models/EmailTemplate');
 const SiteSettings = require('../models/SiteSettings');
@@ -12,7 +12,7 @@ const { buildNewsletterEmail } = require('../templates/newsletterEmail');
 const { buildProjectUpdateEmail } = require('../templates/projectUpdateEmail');
 
 const defaultBrand = {
-    siteName: 'NexusDigital',
+    siteName: 'Scalax Labs',
     logoUrl: '',
     primaryColor: '#6366f1',
     accentColor: '#a855f7',
@@ -56,7 +56,9 @@ const logEmail = async ({ recipient, subject, templateKey, category, provider, s
 
 const sendAndLog = async ({ to, subject, html, text, templateKey = 'custom', category = 'general', payload = {}, replyTo, from }) => {
     const recipients = Array.isArray(to) ? to : [to];
-    const provider = process.env.RESEND_API_KEY ? 'resend' : (process.env.SMTP_HOST ? 'smtp' : 'mock');
+    const provider = process.env.SENDGRID_API_KEY
+        ? 'sendgrid'
+        : (process.env.RESEND_API_KEY ? 'resend' : (process.env.SMTP_HOST ? 'smtp' : 'mock'));
 
     try {
         const result = await sendMail({ to: recipients, subject, html, text, replyTo, from });
@@ -91,7 +93,7 @@ const sendAndLog = async ({ to, subject, html, text, templateKey = 'custom', cat
 
 const ensureDefaultTemplates = async () => {
     const defaults = [
-        { key: 'welcome', name: 'Welcome Email', subject: 'Welcome to NexusDigital', description: 'Welcome email for new users', variables: ['user.name', 'user.email'] },
+        { key: 'welcome', name: 'Welcome Email', subject: 'Welcome to Scalax Labs', description: 'Welcome email for new users', variables: ['user.name', 'user.email'] },
         { key: 'contact', name: 'Contact Confirmation', subject: 'We received your message', description: 'Confirmation for contact form submissions', variables: ['lead.name', 'lead.email', 'lead.message'] },
         { key: 'booking', name: 'Booking Confirmation', subject: 'Your consultation is confirmed', description: 'Confirmation for consultation bookings', variables: ['booking.date', 'booking.time', 'booking.service'] },
         { key: 'otp', name: 'OTP Email', subject: 'Your verification code', description: 'Password reset and verification code email', variables: ['email', 'otp'] },

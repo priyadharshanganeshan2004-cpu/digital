@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+﻿import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { STATS } from '@/lib/constants';
 import SectionHeading from '@/components/ui/SectionHeading';
@@ -70,7 +70,7 @@ export default function WhyChooseUsSection() {
                 <SectionHeading
                     badge="Why Choose Us"
                     title="Why Brands Trust"
-                    highlight="NexusDigital"
+                    highlight="Scalax Labs"
                     description="We don't just deliver services — we build partnerships that transform businesses and drive sustainable growth."
                 />
 
@@ -122,3 +122,4 @@ export default function WhyChooseUsSection() {
         </section>
     );
 }
+

@@ -1,4 +1,4 @@
-const { buildEmailLayout } = require('./_shared');
+﻿const { buildEmailLayout } = require('./_shared');
 
 const buildInvoiceEmail = ({ brand, invoice, client, mode = 'new' }) => {
     const isPaid = mode === 'paid';
@@ -27,7 +27,7 @@ const buildInvoiceEmail = ({ brand, invoice, client, mode = 'new' }) => {
     return {
         subject: isPaid
             ? `Payment received - ${invoice.invoiceNumber}`
-            : `Invoice ${invoice.invoiceNumber} from ${brand.siteName || 'NexusDigital'}`,
+            : `Invoice ${invoice.invoiceNumber} from ${brand.siteName || 'Scalax Labs'}`,
         ...content,
     };
 };

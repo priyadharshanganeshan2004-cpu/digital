@@ -1,4 +1,4 @@
-const { buildEmailLayout } = require('./_shared');
+﻿const { buildEmailLayout } = require('./_shared');
 
 const buildContactEmail = ({ brand, lead, mode = 'customer' }) => {
     const isAdmin = mode === 'admin';
@@ -28,7 +28,7 @@ const buildContactEmail = ({ brand, lead, mode = 'customer' }) => {
 
     return {
         subject: isAdmin
-            ? `New lead from ${lead.name} - ${brand.siteName || 'NexusDigital'}`
+            ? `New lead from ${lead.name} - ${brand.siteName || 'Scalax Labs'}`
             : `We received your message, ${lead.name}`,
         ...content,
     };

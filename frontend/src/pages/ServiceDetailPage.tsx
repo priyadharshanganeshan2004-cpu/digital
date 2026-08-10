@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+﻿import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { HiCheck, HiArrowRight } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
@@ -73,7 +73,7 @@ export default function ServiceDetailPage() {
         <>
             <SEOHead
                 title={service.title}
-                description={`Professional ${service.title} services by NexusDigital. ${service.shortDesc}`}
+                description={`Professional ${service.title} services by Scalax Labs. ${service.shortDesc}`}
                 canonical={`/services/${slug}`}
             />
 
@@ -252,3 +252,4 @@ export default function ServiceDetailPage() {
         </>
     );
 }
+

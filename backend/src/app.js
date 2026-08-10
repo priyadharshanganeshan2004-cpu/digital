@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -135,7 +135,7 @@ app.use('/api/dashboard', apiLimiter, dashboardRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'ok', message: 'NexusDigital API is running' });
+    res.status(200).json({ status: 'ok', message: 'Scalax Labs API is running' });
 });
 
 // ── Error Handling ──────────────────────────────────────────
@@ -153,3 +153,4 @@ app.use(notFound);
 app.use(errorHandler);
 
 module.exports = app;
+

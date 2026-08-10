@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+﻿import { Helmet } from 'react-helmet-async';
 import { APP_NAME } from '@/lib/constants';
 
 interface SEOHeadProps {
@@ -19,7 +19,7 @@ export default function SEOHead({
     type = 'website',
 }: SEOHeadProps) {
     const fullTitle = `${title} | ${APP_NAME}`;
-    const siteUrl = import.meta.env.VITE_SITE_URL || 'https://nexusdigital.com';
+    const siteUrl = import.meta.env.VITE_SITE_URL || 'https://Scalax Labs.com';
 
     return (
         <Helmet>
@@ -52,13 +52,14 @@ export default function SEOHead({
                     logo: `${siteUrl}/logo.png`,
                     description: description,
                     sameAs: [
-                        'https://facebook.com/nexusdigital',
-                        'https://twitter.com/nexusdigital',
-                        'https://linkedin.com/company/nexusdigital',
-                        'https://instagram.com/nexusdigital',
+                        'https://facebook.com/Scalax Labs',
+                        'https://twitter.com/Scalax Labs',
+                        'https://linkedin.com/company/Scalax Labs',
+                        'https://instagram.com/Scalax Labs',
                     ],
                 })}
             </script>
         </Helmet>
     );
 }
+

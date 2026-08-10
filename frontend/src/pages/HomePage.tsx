@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+﻿import { lazy, Suspense } from 'react';
 import SEOHead from '@/components/ui/SEOHead';
 import HeroSection from '@/components/home/HeroSection';
 import { PageLoader } from '@/components/ui/Skeleton';
@@ -26,7 +26,7 @@ export default function HomePage() {
         <>
             <SEOHead
                 title={siteSettings?.seoTitle || 'Home'}
-                description={siteSettings?.seoDescription || 'NexusDigital is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more. Transform your digital presence today.'}
+                description={siteSettings?.seoDescription || 'Scalax Labs is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more. Transform your digital presence today.'}
                 keywords="digital marketing agency, web development, SEO, social media marketing, branding"
                 canonical="/"
             />
@@ -42,3 +42,4 @@ export default function HomePage() {
         </>
     );
 }
+

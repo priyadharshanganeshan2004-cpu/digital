@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiStar, HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import SectionHeading from '@/components/ui/SectionHeading';
@@ -8,7 +8,7 @@ const testimonials = [
         name: 'Sarah Chen',
         position: 'CEO',
         company: 'TechFlow Inc.',
-        content: 'NexusDigital transformed our online presence completely. Our organic traffic increased by 340% in just 6 months, and our conversion rate doubled. Their team is incredibly skilled and responsive.',
+        content: 'Scalax Labs transformed our online presence completely. Our organic traffic increased by 340% in just 6 months, and our conversion rate doubled. Their team is incredibly skilled and responsive.',
         rating: 5,
         initials: 'SC',
     },
@@ -24,7 +24,7 @@ const testimonials = [
         name: 'Emily Thompson',
         position: 'Founder',
         company: 'PixelEdge Studio',
-        content: 'Working with NexusDigital has been a game-changer for our brand. The website they built is not only beautiful but performs exceptionally well. Our bounce rate dropped by 60%.',
+        content: 'Working with Scalax Labs has been a game-changer for our brand. The website they built is not only beautiful but performs exceptionally well. Our bounce rate dropped by 60%.',
         rating: 5,
         initials: 'ET',
     },
@@ -40,7 +40,7 @@ const testimonials = [
         name: 'Lisa Harrison',
         position: 'VP Marketing',
         company: 'VivaNova Health',
-        content: 'NexusDigital\'s content marketing strategy put us on the map. We went from zero brand awareness to being featured in major industry publications within a year.',
+        content: 'Scalax Labs\'s content marketing strategy put us on the map. We went from zero brand awareness to being featured in major industry publications within a year.',
         rating: 5,
         initials: 'LH',
     },
@@ -144,3 +144,4 @@ export default function TestimonialsSection() {
         </section>
     );
 }
+

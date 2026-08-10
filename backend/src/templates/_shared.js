@@ -1,4 +1,4 @@
-const escapeHtml = (value = '') =>
+﻿const escapeHtml = (value = '') =>
     String(value)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -28,7 +28,7 @@ const buildEmailLayout = ({
     details = [],
     footerNote = '',
 }) => {
-    const brandName = escapeHtml(brand?.siteName || 'NexusDigital');
+    const brandName = escapeHtml(brand?.siteName || 'Scalax Labs');
     const logoUrl = brand?.logoUrl || '';
     const primaryColor = brand?.primaryColor || '#6366f1';
     const accentColor = brand?.accentColor || '#a855f7';

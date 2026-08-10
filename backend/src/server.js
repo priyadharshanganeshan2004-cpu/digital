@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 // Prefer IPv4 for outbound DNS resolution to avoid ENETUNREACH on hosts without IPv6 egress
 try {
     const dns = require('node:dns');
@@ -19,14 +19,14 @@ const seedDefaultCMSData = async () => {
     const settingsCount = await SiteSettings.countDocuments();
     if (settingsCount === 0) {
         await SiteSettings.create({
-            siteName: 'NexusDigital',
+            siteName: 'Scalax Labs',
             tagline: 'Growth-driven digital strategy',
             description: 'We help ambitious brands grow with strategy, design, web experiences, and measurable digital performance.',
             contactEmail: 'priyadharshanganeshan2004@gmail.com',
             phone: '+91 9080399984',
             address: '123 Business Avenue, New York, NY',
-            seoTitle: 'NexusDigital | Digital Marketing Agency',
-            seoDescription: 'NexusDigital is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
+            seoTitle: 'Scalax Labs | Digital Marketing Agency',
+            seoDescription: 'Scalax Labs is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
             heroBadge: 'Digital growth partner for ambitious brands',
             heroTitle: 'Growth-driven digital strategy',
             heroDescription: 'We blend strategy, creative execution, and measurable performance to help brands grow with clarity and confidence.',

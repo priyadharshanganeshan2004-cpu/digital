@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -67,7 +67,7 @@ export default function ContactPage() {
         <>
             <SEOHead
                 title="Contact Us"
-                description="Get in touch with NexusDigital. We'd love to hear about your project and discuss how we can help."
+                description="Get in touch with Scalax Labs. We'd love to hear about your project and discuss how we can help."
                 canonical="/contact"
             />
 
@@ -243,3 +243,4 @@ export default function ContactPage() {
         </>
     );
 }
+

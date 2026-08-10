@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { HiSearch, HiClock, HiUser, HiArrowRight, HiHeart } from 'react-icons/hi';
@@ -33,7 +33,7 @@ export default function BlogPage() {
         <>
             <SEOHead
                 title="Blog"
-                description="Expert insights, tips, and strategies on digital marketing, SEO, web development, and more from the NexusDigital team."
+                description="Expert insights, tips, and strategies on digital marketing, SEO, web development, and more from the Scalax Labs Team."
                 canonical="/blog"
             />
 
@@ -117,7 +117,7 @@ export default function BlogPage() {
                                     <div className="flex items-center gap-4 mb-3 text-xs text-dark-400">
                                         <span className="flex items-center gap-1">
                                             <HiUser className="w-3.5 h-3.5" />
-                                            {post.author || 'NexusDigital Team'}
+                                            {post.author || 'Scalax Labs Team'}
                                         </span>
                                         <span className="flex items-center gap-1">
                                             <HiClock className="w-3.5 h-3.5" />
@@ -159,3 +159,4 @@ export default function BlogPage() {
         </>
     );
 }
+

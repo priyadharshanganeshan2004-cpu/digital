@@ -1,4 +1,4 @@
-const { buildEmailLayout } = require('./_shared');
+﻿const { buildEmailLayout } = require('./_shared');
 
 const buildNewsletterEmail = ({ brand, subscriber, subject, message, ctaText, ctaUrl, mode = 'confirmation' }) => {
     const content = buildEmailLayout({
@@ -21,7 +21,7 @@ const buildNewsletterEmail = ({ brand, subscriber, subject, message, ctaText, ct
     });
 
     return {
-        subject: subject || `You're subscribed to ${brand.siteName || 'NexusDigital'} updates`,
+        subject: subject || `You're subscribed to ${brand.siteName || 'Scalax Labs'} updates`,
         ...content,
     };
 };

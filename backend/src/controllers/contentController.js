@@ -1,4 +1,4 @@
-const PortfolioItem = require('../models/PortfolioItem');
+﻿const PortfolioItem = require('../models/PortfolioItem');
 const BlogPost = require('../models/BlogPost');
 const asyncHandler = require('../middleware/asyncHandler');
 
@@ -123,7 +123,7 @@ const createBlogPost = asyncHandler(async (req, res) => {
     excerpt,
     content: content || '',
     category: category || 'Marketing',
-    author: author || 'NexusDigital Team',
+    author: author || 'Scalax Labs Team',
     readTime: readTime || 5,
     color: color || 'from-blue-500 to-indigo-600',
     imageUrl: imageUrl || '',
@@ -182,3 +182,4 @@ module.exports = {
   updateBlogPost,
   deleteBlogPost,
 };
+

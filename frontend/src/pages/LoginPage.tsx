@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
@@ -49,7 +49,7 @@ export default function LoginPage() {
 
     return (
         <>
-            <SEOHead title="Sign In" description="Sign in to your NexusDigital account." canonical="/login" />
+            <SEOHead title="Sign In" description="Sign in to your Scalax Labs account." canonical="/login" />
 
             <div className="min-h-screen flex">
                 {/* Left Panel */}
@@ -183,3 +183,4 @@ export default function LoginPage() {
         </>
     );
 }
+

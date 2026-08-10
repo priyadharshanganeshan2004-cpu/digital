@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 
 const blogPostSchema = new mongoose.Schema(
   {
@@ -7,7 +7,7 @@ const blogPostSchema = new mongoose.Schema(
     excerpt: { type: String, default: '', trim: true },
     content: { type: String, default: '' },
     category: { type: String, default: 'Marketing', trim: true },
-    author: { type: String, default: 'NexusDigital Team', trim: true },
+    author: { type: String, default: 'Scalax Labs Team', trim: true },
     readTime: { type: Number, default: 5 },
     color: { type: String, default: 'from-blue-500 to-indigo-600' },
     imageUrl: { type: String, default: '' },
@@ -19,3 +19,4 @@ const blogPostSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model('BlogPost', blogPostSchema);
+

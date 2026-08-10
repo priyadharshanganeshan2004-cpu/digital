@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { HiArrowRight, HiUserGroup, HiLightBulb, HiHeart, HiGlobe } from 'react-icons/hi';
 import SectionHeading from '@/components/ui/SectionHeading';
@@ -26,7 +26,7 @@ export default function AboutPage() {
         <>
             <SEOHead
                 title="About Us"
-                description="Learn about NexusDigital - a premier digital marketing agency with 12+ years of experience transforming brands through innovative digital solutions."
+                description="Learn about Scalax Labs - a premier digital marketing agency with 12+ years of experience transforming brands through innovative digital solutions."
                 canonical="/about"
             />
 
@@ -48,7 +48,7 @@ export default function AboutPage() {
                             That Matter
                         </h1>
                         <p className="text-lg text-dark-500 leading-relaxed max-w-2xl">
-                            Founded in 2012, NexusDigital has grown from a small team of passionate digital enthusiasts to a full-service agency serving 150+ clients worldwide.
+                            Founded in 2012, Scalax Labs has grown from a small team of passionate digital enthusiasts to a full-service agency serving 150+ clients worldwide.
                         </p>
                     </motion.div>
                 </div>
@@ -179,3 +179,4 @@ export default function AboutPage() {
         </>
     );
 }
+

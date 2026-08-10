@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 
 const siteSettingsSchema = new mongoose.Schema(
   {
-    siteName: { type: String, default: 'NexusDigital' },
+    siteName: { type: String, default: 'Scalax Labs' },
     tagline: { type: String, default: 'Growth-driven digital strategy' },
     description: {
       type: String,
@@ -21,11 +21,11 @@ const siteSettingsSchema = new mongoose.Schema(
     instagram: { type: String, default: '' },
     linkedin: { type: String, default: '' },
     youtube: { type: String, default: '' },
-    seoTitle: { type: String, default: 'NexusDigital | Digital Marketing Agency' },
+    seoTitle: { type: String, default: 'Scalax Labs | Digital Marketing Agency' },
     seoDescription: {
       type: String,
       default:
-        'NexusDigital is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
+        'Scalax Labs is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
     },
     heroBadge: { type: String, default: 'Digital growth partner for ambitious brands' },
     heroTitle: { type: String, default: 'Growth-driven digital strategy' },
@@ -42,3 +42,4 @@ const siteSettingsSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model('SiteSettings', siteSettingsSchema);
+

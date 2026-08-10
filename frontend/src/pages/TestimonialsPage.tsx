@@ -1,4 +1,4 @@
-import SEOHead from '@/components/ui/SEOHead';
+﻿import SEOHead from '@/components/ui/SEOHead';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import CTASection from '@/components/home/CTASection';
 import { motion } from 'framer-motion';
@@ -8,7 +8,7 @@ export default function TestimonialsPage() {
         <>
             <SEOHead
                 title="Testimonials"
-                description="See what our clients say about working with NexusDigital. Real reviews from real brands."
+                description="See what our clients say about working with Scalax Labs. Real reviews from real brands."
                 canonical="/testimonials"
             />
             <section className="relative pt-32 pb-8 bg-gradient-to-b from-primary-50/50 to-white">
@@ -26,3 +26,4 @@ export default function TestimonialsPage() {
         </>
     );
 }
+

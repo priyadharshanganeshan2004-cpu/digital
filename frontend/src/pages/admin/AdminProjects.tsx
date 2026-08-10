@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { HiCollection, HiPlus, HiSearch, HiFilter, HiX, HiEye } from 'react-icons/hi';
@@ -213,7 +213,7 @@ export default function AdminProjects() {
                                     type="text"
                                     required
                                     value={title}
-                                    placeholder="e.g. NexusDigital Redesign"
+                                    placeholder="e.g. Scalax Labs Redesign"
                                     onChange={(e) => setTitle(e.target.value)}
                                     className="w-full px-3.8 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                                 />
@@ -277,3 +277,4 @@ export default function AdminProjects() {
         </div>
     );
 }
+

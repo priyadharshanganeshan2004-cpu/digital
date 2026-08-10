@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { HiArrowLeft, HiClock, HiUser, HiHeart } from 'react-icons/hi';
@@ -31,7 +31,7 @@ export default function BlogDetailPage() {
         <>
             <SEOHead
                 title={post?.title || 'Blog Post'}
-                description={post?.excerpt || 'Insights from the NexusDigital team.'}
+                description={post?.excerpt || 'Insights from the Scalax Labs Team.'}
                 canonical={`/blog/${slug}`}
             />
 
@@ -53,7 +53,7 @@ export default function BlogDetailPage() {
                                 </span>
                                 <h1 className="text-4xl sm:text-5xl font-heading font-bold text-dark-900 mb-4">{post?.title}</h1>
                                 <div className="flex flex-wrap items-center gap-4 text-sm text-dark-400">
-                                    <span className="flex items-center gap-1"><HiUser className="w-4 h-4" /> {post?.author || 'NexusDigital Team'}</span>
+                                    <span className="flex items-center gap-1"><HiUser className="w-4 h-4" /> {post?.author || 'Scalax Labs Team'}</span>
                                     <span className="flex items-center gap-1"><HiClock className="w-4 h-4" /> {post?.readTime || 5} min read</span>
                                     <span className="flex items-center gap-1"><HiHeart className="w-4 h-4" /> {post?.likes || 0}</span>
                                 </div>
