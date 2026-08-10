@@ -178,25 +178,39 @@ const sendClientCredentialsEmail = async ({ user, tempPassword }) => {
     });
 };
 
-const sendContactEmails = async ({ lead }) => {
+const sendContactEmails = async ({ lead, meta = {} }) => {
     const brand = await getBrandContext();
-    const customerTemplate = buildContactEmail({ brand, lead, mode: 'customer' });
-    const adminTemplate = buildContactEmail({ brand, lead, mode: 'admin' });
-    const adminRecipient = brand.contactEmail || process.env.EMAIL_FROM || 'priyadharshanganeshan2004@gmail.com';
+    const customerTemplate = buildContactEmail({ brand, lead, mode: 'customer', meta });
+    const adminTemplate = buildContactEmail({ brand, lead, mode: 'admin', meta });
+
+    // Priority: CONTACT_RECEIVER_EMAIL env var → brand contactEmail → hardcoded fallback
+    const adminRecipient =
+        process.env.CONTACT_RECEIVER_EMAIL ||
+        brand.contactEmail ||
+        process.env.EMAIL_FROM ||
+        'priyadharshanganeshan2004@gmail.com';
 
     const results = [];
+
+    // Confirmation email to the customer (best-effort — don't fail admin notification if this bounces)
     if (lead.email) {
-        results.push(await sendAndLog({
-            to: lead.email,
-            subject: customerTemplate.subject,
-            html: customerTemplate.html,
-            text: customerTemplate.text,
-            templateKey: 'contact',
-            category: 'contact',
-            payload: { lead },
-        }));
+        try {
+            results.push(await sendAndLog({
+                to: lead.email,
+                subject: customerTemplate.subject,
+                html: customerTemplate.html,
+                text: customerTemplate.text,
+                templateKey: 'contact',
+                category: 'contact',
+                payload: { lead },
+                replyTo: adminRecipient,
+            }));
+        } catch (err) {
+            console.warn('[emailService] Customer confirmation email failed:', err.message);
+        }
     }
 
+    // Admin notification — this is the critical one (arrives in your Gmail)
     results.push(await sendAndLog({
         to: adminRecipient,
         subject: adminTemplate.subject,
@@ -204,11 +218,13 @@ const sendContactEmails = async ({ lead }) => {
         text: adminTemplate.text,
         templateKey: 'contact-admin',
         category: 'lead-notification',
-        payload: { lead },
+        payload: { lead, meta },
+        replyTo: lead.email || undefined,
     }));
 
     return results;
 };
+
 
 const sendBookingEmails = async ({ booking }) => {
     const brand = await getBrandContext();

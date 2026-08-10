@@ -1,10 +1,36 @@
 const { body } = require('express-validator');
 
 const contactEmailValidators = [
-    body('name').trim().notEmpty().withMessage('Name is required'),
-    body('email').trim().isEmail().withMessage('Please enter a valid email address'),
-    body('service').trim().notEmpty().withMessage('Service is required'),
-    body('message').trim().notEmpty().withMessage('Message is required'),
+    body('name')
+        .trim()
+        .notEmpty().withMessage('Name is required')
+        .isLength({ max: 100 }).withMessage('Name must be 100 characters or fewer'),
+    body('email')
+        .trim()
+        .isEmail().withMessage('Please enter a valid email address')
+        .normalizeEmail(),
+    body('company')
+        .optional()
+        .trim()
+        .isLength({ max: 200 }).withMessage('Company name must be 200 characters or fewer'),
+    body('phone')
+        .optional()
+        .trim()
+        .matches(/^[\d\s+\-().]*$/).withMessage('Phone number contains invalid characters')
+        .isLength({ max: 30 }).withMessage('Phone number is too long'),
+    body('service')
+        .trim()
+        .notEmpty().withMessage('Service is required')
+        .isLength({ max: 100 }).withMessage('Service value is too long'),
+    body('budget')
+        .optional()
+        .trim()
+        .isLength({ max: 100 }).withMessage('Budget value is too long'),
+    body('message')
+        .trim()
+        .notEmpty().withMessage('Message is required')
+        .isLength({ min: 10 }).withMessage('Message must be at least 10 characters')
+        .isLength({ max: 2000 }).withMessage('Message must be 2000 characters or fewer'),
 ];
 
 const bookingEmailValidators = [
