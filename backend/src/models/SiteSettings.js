@@ -29,13 +29,36 @@ const siteSettingsSchema = new mongoose.Schema(
     },
     heroBadge: { type: String, default: 'Digital growth partner for ambitious brands' },
     heroTitle: { type: String, default: 'Growth-driven digital strategy' },
+    // Structured title fields (used by HeroSection for styled rendering)
+    heroTitleLine1: { type: String, default: 'Growth-driven' },
+    heroTitleLine2: { type: String, default: 'digital' },
+    heroHighlight: { type: String, default: 'strategy' },
     heroDescription: {
       type: String,
       default:
         'We blend strategy, creative execution, and measurable performance to help brands grow with clarity and confidence.',
     },
     heroPrimaryCta: { type: String, default: 'Start your project' },
+    heroPrimaryCtaLink: { type: String, default: '/book-consultation' },
     heroSecondaryCta: { type: String, default: 'See our work' },
+    heroSecondaryCtaLink: { type: String, default: '/portfolio' },
+    heroTrustedLabel: { type: String, default: 'Trusted by Industry Leaders' },
+    heroTrustedBrands: {
+      type: [
+        {
+          name: { type: String, required: true },
+          logo: { type: String, default: '' },
+        },
+      ],
+      default: [
+        { name: 'TechFlow', logo: '' },
+        { name: 'CloudBase', logo: '' },
+        { name: 'DataSync', logo: '' },
+        { name: 'PixelEdge', logo: '' },
+        { name: 'VivaNova', logo: '' },
+        { name: 'BlueShift', logo: '' },
+      ],
+    },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }

@@ -29,9 +29,23 @@ const seedDefaultCMSData = async () => {
             seoDescription: 'Scalax Labs is a premier digital marketing agency delivering innovative solutions in web development, SEO, social media marketing, and more.',
             heroBadge: 'Digital growth partner for ambitious brands',
             heroTitle: 'Growth-driven digital strategy',
+            heroTitleLine1: 'Growth-driven',
+            heroTitleLine2: 'digital',
+            heroHighlight: 'strategy',
             heroDescription: 'We blend strategy, creative execution, and measurable performance to help brands grow with clarity and confidence.',
             heroPrimaryCta: 'Start your project',
+            heroPrimaryCtaLink: '/book-consultation',
             heroSecondaryCta: 'See our work',
+            heroSecondaryCtaLink: '/portfolio',
+            heroTrustedLabel: 'Trusted by Industry Leaders',
+            heroTrustedBrands: [
+                { name: 'TechFlow', logo: '' },
+                { name: 'CloudBase', logo: '' },
+                { name: 'DataSync', logo: '' },
+                { name: 'PixelEdge', logo: '' },
+                { name: 'VivaNova', logo: '' },
+                { name: 'BlueShift', logo: '' },
+            ],
         });
     }
 
