@@ -45,11 +45,48 @@ const defaultSiteSettings = {
   ],
 };
 
+// Fields added after the initial schema deployment.
+// If the existing MongoDB document is missing any of these,
+// we write the defaults in-place so the public API always returns them.
+const MIGRATABLE_FIELDS = [
+  'heroTitleLine1',
+  'heroTitleLine2',
+  'heroHighlight',
+  'heroPrimaryCtaLink',
+  'heroSecondaryCtaLink',
+  'heroTrustedLabel',
+  'heroTrustedBrands',
+];
+
 const ensureSiteSettings = async () => {
   let settings = await SiteSettings.findOne();
   if (!settings) {
+    console.log('[CMS] No SiteSettings document found — seeding defaults.');
     settings = await SiteSettings.create(defaultSiteSettings);
+    return settings;
   }
+
+  // One-time migration: populate fields that were added after the document
+  // was first created (e.g. heroTitleLine1 added in a later schema version).
+  let needsSave = false;
+  for (const field of MIGRATABLE_FIELDS) {
+    const stored = settings[field];
+    const isEmpty = stored === undefined || stored === null || stored === '' ||
+      (Array.isArray(stored) && stored.length === 0);
+    if (isEmpty && defaultSiteSettings[field] !== undefined) {
+      settings[field] = defaultSiteSettings[field];
+      if (Array.isArray(defaultSiteSettings[field])) {
+        settings.markModified(field);
+      }
+      needsSave = true;
+      console.log(`[CMS] Migrating missing field "${field}" to default value.`);
+    }
+  }
+  if (needsSave) {
+    await settings.save();
+    console.log('[CMS] Migration save completed.');
+  }
+
   return settings;
 };
 
@@ -59,26 +96,48 @@ const getSiteSettings = asyncHandler(async (req, res) => {
 });
 
 const getSiteSettingsPublic = asyncHandler(async (req, res) => {
+  // CRITICAL: must never be cached by CDN or browser — settings are
+  // admin-controlled and must always be fresh.
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   const settings = await ensureSiteSettings();
+  console.log('[CMS] getSiteSettingsPublic — heroTitleLine1:', settings.heroTitleLine1, '| heroHighlight:', settings.heroHighlight);
   res.json({ success: true, data: settings });
 });
 
+// Fields that Mongoose will NOT auto-detect when assigned by reference.
+// Must call .markModified(field) before .save() for these.
+const ARRAY_FIELDS = ['heroTrustedBrands'];
+
 const updateSiteSettings = asyncHandler(async (req, res) => {
-  console.log('[updateSiteSettings] Incoming request body keys:', Object.keys(req.body || {}));
-  console.log('[updateSiteSettings] Updated by user:', req.user?._id);
+  const bodyKeys = Object.keys(req.body || {});
+  console.log('[updateSiteSettings] request received — keys:', bodyKeys.join(', '));
+  console.log('[updateSiteSettings] user:', req.user?._id, '| role:', req.user?.role);
 
   let settings = await ensureSiteSettings();
 
-  Object.keys(req.body || {}).forEach((key) => {
+  // Apply all incoming values to the Mongoose document
+  bodyKeys.forEach((key) => {
     if (req.body[key] !== undefined) {
       settings[key] = req.body[key];
+      // BUG FIX: Mongoose does not track direct array/subdocument reference
+      // assignment — explicitly mark these paths as modified so save() persists them.
+      if (ARRAY_FIELDS.includes(key)) {
+        settings.markModified(key);
+        console.log(`[updateSiteSettings] markModified called for array field: ${key}`);
+      }
     }
   });
 
   settings.updatedBy = req.user?._id || settings.updatedBy;
 
   const saved = await settings.save();
-  console.log('[updateSiteSettings] MongoDB save result — _id:', saved._id, '| updatedAt:', saved.updatedAt);
+  console.log('[updateSiteSettings] save complete — _id:', saved._id);
+  console.log('[updateSiteSettings] heroTitleLine1:', saved.heroTitleLine1);
+  console.log('[updateSiteSettings] heroHighlight:', saved.heroHighlight);
+  console.log('[updateSiteSettings] heroTrustedBrands count:', saved.heroTrustedBrands?.length);
 
   res.json({ success: true, data: saved, message: 'Website settings updated successfully' });
 });
