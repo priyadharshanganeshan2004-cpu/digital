@@ -91,7 +91,9 @@ const ensureSiteSettings = async () => {
 };
 
 const getSiteSettings = asyncHandler(async (req, res) => {
+  const docCount = await SiteSettings.countDocuments();
   const settings = await ensureSiteSettings();
+  console.log('[CMS] getSiteSettings (admin) — _id:', settings._id, '| docCount:', docCount);
   res.json({ success: true, data: settings });
 });
 
@@ -102,44 +104,85 @@ const getSiteSettingsPublic = asyncHandler(async (req, res) => {
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Surrogate-Control', 'no-store');
 
+  const docCount = await SiteSettings.countDocuments();
   const settings = await ensureSiteSettings();
-  console.log('[CMS] getSiteSettingsPublic — heroTitleLine1:', settings.heroTitleLine1, '| heroHighlight:', settings.heroHighlight);
+  console.log('[CMS] getSiteSettingsPublic — _id:', settings._id, '| docCount:', docCount);
+  console.log('[CMS] heroTitleLine1:', settings.heroTitleLine1);
+  console.log('[CMS] heroHighlight:', settings.heroHighlight);
   res.json({ success: true, data: settings });
 });
 
-// Fields that Mongoose will NOT auto-detect when assigned by reference.
-// Must call .markModified(field) before .save() for these.
-const ARRAY_FIELDS = ['heroTrustedBrands'];
+// ── Keys that must NEVER be included in the $set payload ─────────────
+// The admin frontend sends the full form object (which includes _id, __v,
+// timestamps received from the GET response). If these leak into $set they
+// corrupt Mongoose's internal version tracking and cause silent update failures.
+const INTERNAL_KEYS = new Set(['_id', '__v', 'createdAt', 'updatedAt']);
 
 const updateSiteSettings = asyncHandler(async (req, res) => {
   const bodyKeys = Object.keys(req.body || {});
   console.log('[updateSiteSettings] request received — keys:', bodyKeys.join(', '));
   console.log('[updateSiteSettings] user:', req.user?._id, '| role:', req.user?.role);
 
-  let settings = await ensureSiteSettings();
-
-  // Apply all incoming values to the Mongoose document
-  bodyKeys.forEach((key) => {
-    if (req.body[key] !== undefined) {
-      settings[key] = req.body[key];
-      // BUG FIX: Mongoose does not track direct array/subdocument reference
-      // assignment — explicitly mark these paths as modified so save() persists them.
-      if (ARRAY_FIELDS.includes(key)) {
-        settings.markModified(key);
-        console.log(`[updateSiteSettings] markModified called for array field: ${key}`);
-      }
+  // Build a clean $set payload — exclude internal Mongoose/MongoDB fields
+  const setPayload = {};
+  for (const key of bodyKeys) {
+    if (!INTERNAL_KEYS.has(key) && req.body[key] !== undefined) {
+      setPayload[key] = req.body[key];
     }
-  });
+  }
+  setPayload.updatedBy = req.user?._id;
 
-  settings.updatedBy = req.user?._id || settings.updatedBy;
+  // Diagnostic: log what we're about to write
+  console.log('[updateSiteSettings] heroTitleLine1 IN:', setPayload.heroTitleLine1);
+  console.log('[updateSiteSettings] heroTitleLine2 IN:', setPayload.heroTitleLine2);
+  console.log('[updateSiteSettings] heroHighlight IN:', setPayload.heroHighlight);
 
-  const saved = await settings.save();
-  console.log('[updateSiteSettings] save complete — _id:', saved._id);
-  console.log('[updateSiteSettings] heroTitleLine1:', saved.heroTitleLine1);
-  console.log('[updateSiteSettings] heroHighlight:', saved.heroHighlight);
-  console.log('[updateSiteSettings] heroTrustedBrands count:', saved.heroTrustedBrands?.length);
+  const docCount = await SiteSettings.countDocuments();
+  console.log('[updateSiteSettings] SiteSettings document count:', docCount);
+  if (docCount > 1) {
+    console.warn('[updateSiteSettings] ⚠ WARNING: Multiple SiteSettings documents exist! This causes inconsistency.');
+  }
 
-  res.json({ success: true, data: saved, message: 'Website settings updated successfully' });
+  // ── ATOMIC UPDATE ──────────────────────────────────────────────────
+  // Uses findOneAndUpdate($set) instead of the old findOne()+modify+save()
+  // pattern. The old pattern silently lost updates because:
+  //   1. ensureSiteSettings() migration called save() → bumped __v
+  //   2. The stale in-memory document still had the old __v
+  //   3. The second save() matched 0 documents → update silently dropped
+  //
+  // findOneAndUpdate is a single atomic MongoDB operation that bypasses
+  // Mongoose's __v version checking entirely.
+  const updated = await SiteSettings.findOneAndUpdate(
+    {},
+    { $set: setPayload },
+    { new: true, runValidators: true }
+  );
+
+  if (!updated) {
+    // No document exists yet — create one with the admin payload
+    console.log('[updateSiteSettings] No document found — creating new SiteSettings.');
+    const created = await SiteSettings.create({ ...defaultSiteSettings, ...setPayload });
+    return res.json({ success: true, data: created, message: 'Website settings created successfully' });
+  }
+
+  console.log('[updateSiteSettings] SAVED — _id:', updated._id);
+  console.log('[updateSiteSettings] heroTitleLine1 OUT:', updated.heroTitleLine1);
+  console.log('[updateSiteSettings] heroTitleLine2 OUT:', updated.heroTitleLine2);
+  console.log('[updateSiteSettings] heroHighlight OUT:', updated.heroHighlight);
+  console.log('[updateSiteSettings] heroTrustedBrands count:', updated.heroTrustedBrands?.length);
+
+  // ── VERIFICATION RE-READ ──────────────────────────────────────────
+  // Read directly from MongoDB (lean, no Mongoose hydration) to prove
+  // the values were actually persisted. This line appears in Render logs.
+  const verify = await SiteSettings.findById(updated._id).lean();
+  console.log('[updateSiteSettings] VERIFY — heroTitleLine1:', verify?.heroTitleLine1);
+  console.log('[updateSiteSettings] VERIFY — heroHighlight:', verify?.heroHighlight);
+
+  if (verify?.heroTitleLine1 !== setPayload.heroTitleLine1) {
+    console.error('[updateSiteSettings] ❌ PERSISTENCE MISMATCH — DB has:', verify?.heroTitleLine1, '| expected:', setPayload.heroTitleLine1);
+  }
+
+  res.json({ success: true, data: updated, message: 'Website settings updated successfully' });
 });
 
 const getServices = asyncHandler(async (req, res) => {
