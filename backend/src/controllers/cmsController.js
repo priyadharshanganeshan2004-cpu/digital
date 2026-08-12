@@ -58,8 +58,19 @@ const MIGRATABLE_FIELDS = [
   'heroTrustedBrands',
 ];
 
+const cleanupDuplicateSettings = async () => {
+  const docs = await SiteSettings.find({}).sort({ updatedAt: -1 });
+  if (docs.length > 1) {
+    console.warn(`[CMS] ⚠ WARNING: Found ${docs.length} SiteSettings documents. Cleaning up duplicates, keeping the most recently updated one.`);
+    const keepId = docs[0]._id;
+    await SiteSettings.deleteMany({ _id: { $ne: keepId } });
+    return docs[0];
+  }
+  return docs[0] || null;
+};
+
 const ensureSiteSettings = async () => {
-  let settings = await SiteSettings.findOne();
+  let settings = await cleanupDuplicateSettings();
   if (!settings) {
     console.log('[CMS] No SiteSettings document found — seeding defaults.');
     settings = await SiteSettings.create(defaultSiteSettings);
@@ -71,8 +82,9 @@ const ensureSiteSettings = async () => {
   let needsSave = false;
   for (const field of MIGRATABLE_FIELDS) {
     const stored = settings[field];
-    const isEmpty = stored === undefined || stored === null || stored === '' ||
-      (Array.isArray(stored) && stored.length === 0);
+    // CRITICAL: Only count as empty/missing if it's undefined or null.
+    // Empty strings "" or empty arrays [] are valid user selections and must not be overwritten.
+    const isEmpty = stored === undefined || stored === null;
     if (isEmpty && defaultSiteSettings[field] !== undefined) {
       settings[field] = defaultSiteSettings[field];
       if (Array.isArray(defaultSiteSettings[field])) {
@@ -123,6 +135,9 @@ const updateSiteSettings = asyncHandler(async (req, res) => {
   console.log('[updateSiteSettings] request received — keys:', bodyKeys.join(', '));
   console.log('[updateSiteSettings] user:', req.user?._id, '| role:', req.user?.role);
 
+  // Clean up any duplicate settings records in MongoDB before applying updates
+  await cleanupDuplicateSettings();
+
   // Build a clean $set payload — exclude internal Mongoose/MongoDB fields
   const setPayload = {};
   for (const key of bodyKeys) {
@@ -152,11 +167,15 @@ const updateSiteSettings = asyncHandler(async (req, res) => {
   //
   // findOneAndUpdate is a single atomic MongoDB operation that bypasses
   // Mongoose's __v version checking entirely.
+  console.log('[CMS SAVE] Incoming payload:', req.body);
+  const existingDoc = await SiteSettings.findOne({});
+  console.log('[CMS SAVE] Document before update:', existingDoc);
   const updated = await SiteSettings.findOneAndUpdate(
     {},
     { $set: setPayload },
     { new: true, runValidators: true }
   );
+  console.log('[CMS SAVE] Document after update:', updated);
 
   if (!updated) {
     // No document exists yet — create one with the admin payload
