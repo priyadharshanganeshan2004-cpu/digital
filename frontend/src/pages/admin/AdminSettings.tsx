@@ -11,6 +11,13 @@ interface TrustedBrand {
   logo: string;
 }
 
+interface LogoSettings {
+  text: string;
+  siteName: string;
+  colorFrom: string;
+  colorTo: string;
+}
+
 interface SettingsForm {
   // General
   siteName: string;
@@ -38,6 +45,8 @@ interface SettingsForm {
   heroSecondaryCtaLink: string;
   heroTrustedLabel: string;
   heroTrustedBrands: TrustedBrand[];
+  // Logo Settings
+  logo: LogoSettings;
 }
 
 const initialState: SettingsForm = {
@@ -69,6 +78,12 @@ const initialState: SettingsForm = {
     { name: 'VivaNova', logo: '' },
     { name: 'BlueShift', logo: '' },
   ],
+  logo: {
+    text: 'N',
+    siteName: 'NexusDigital',
+    colorFrom: '#9333ea',
+    colorTo: '#4f46e5',
+  },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -104,6 +119,7 @@ export default function AdminSettings() {
       setForm({
         ...initialState,
         ...data,
+        logo: data.logo ? { ...initialState.logo, ...data.logo } : initialState.logo,
         // Ensure heroTrustedBrands is always a clean array
         heroTrustedBrands:
           Array.isArray(data.heroTrustedBrands) && data.heroTrustedBrands.length > 0
@@ -140,6 +156,16 @@ export default function AdminSettings() {
   // ── Generic field change ─────────────────────────────────────────────
   const handleChange = (key: keyof SettingsForm, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleLogoChange = (key: keyof LogoSettings, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      logo: {
+        ...prev.logo,
+        [key]: value,
+      },
+    }));
   };
 
   // ── Trusted brand helpers ────────────────────────────────────────────
@@ -230,6 +256,72 @@ export default function AdminSettings() {
               <span className={spanCls}>Accent color</span>
               <input id="settings-accentColor" type="color" value={form.accentColor} onChange={(e) => handleChange('accentColor', e.target.value)} className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-2 py-2" />
             </label>
+          </div>
+        </section>
+
+        {/* ── Logo & Brand Identity ───────────────────────────── */}
+        <section className="bg-white rounded-2xl border border-gray-100 p-6">
+          <h3 className="text-base font-heading font-semibold text-dark-900 mb-4">Logo & Brand Identity</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+            <label className={labelCls}>
+              <span className={spanCls}>Logo Badge Text / Initials (Max 3 Chars)</span>
+              <input
+                id="logo-text"
+                value={form.logo?.text || ''}
+                maxLength={3}
+                onChange={(e) => handleLogoChange('text', e.target.value)}
+                className={inputCls}
+                placeholder="e.g. N"
+              />
+            </label>
+            <label className={labelCls}>
+              <span className={spanCls}>Logo Brand Name</span>
+              <input
+                id="logo-siteName"
+                value={form.logo?.siteName || ''}
+                onChange={(e) => handleLogoChange('siteName', e.target.value)}
+                className={inputCls}
+                placeholder="e.g. NexusDigital"
+              />
+            </label>
+            <label className={labelCls}>
+              <span className={spanCls}>Logo Gradient - Start Color</span>
+              <input
+                id="logo-colorFrom"
+                type="color"
+                value={form.logo?.colorFrom || '#9333ea'}
+                onChange={(e) => handleLogoChange('colorFrom', e.target.value)}
+                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-2 py-2"
+              />
+            </label>
+            <label className={labelCls}>
+              <span className={spanCls}>Logo Gradient - End Color</span>
+              <input
+                id="logo-colorTo"
+                type="color"
+                value={form.logo?.colorTo || '#4f46e5'}
+                onChange={(e) => handleLogoChange('colorTo', e.target.value)}
+                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-2 py-2"
+              />
+            </label>
+          </div>
+
+          {/* Live Preview */}
+          <div className="border border-dashed border-gray-200 rounded-2xl p-6 bg-gray-50/50">
+            <span className="text-xs font-semibold uppercase tracking-wide text-dark-500 block mb-3">Live Logo Preview</span>
+            <div className="flex items-center gap-2 max-w-fit bg-white/80 backdrop-blur-xl border border-gray-200/50 px-4 py-2.5 rounded-xl shadow-sm">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg font-heading shadow-md"
+                style={{
+                  background: `linear-gradient(135deg, ${form.logo?.colorFrom || '#9333ea'}, ${form.logo?.colorTo || '#4f46e5'})`
+                }}
+              >
+                {form.logo?.text || 'N'}
+              </div>
+              <span className="font-heading font-bold text-xl tracking-tight text-dark-900">
+                {form.logo?.siteName || 'NexusDigital'}
+              </span>
+            </div>
           </div>
         </section>
 

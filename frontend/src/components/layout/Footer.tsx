@@ -15,6 +15,9 @@ import {
 import { APP_NAME } from '@/lib/constants';
 import { useState } from 'react';
 import emailApi from '@/services/emailApi';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
+
 
 const footerLinks = {
     services: [
@@ -54,6 +57,15 @@ export default function Footer() {
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 0,
+    });
 
     const handleSubscribe = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -122,10 +134,19 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="lg:col-span-2">
                         <Link to="/" className="flex items-center gap-2 mb-6">
-                            <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center">
-                                <span className="text-white font-bold text-lg font-heading">N</span>
+                            <div
+                                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                                style={{
+                                    background: `linear-gradient(135deg, ${siteSettings?.logo?.colorFrom || '#9333ea'}, ${siteSettings?.logo?.colorTo || '#4f46e5'})`
+                                }}
+                            >
+                                <span className="text-white font-bold text-lg font-heading">
+                                    {siteSettings?.logo?.text || 'N'}
+                                </span>
                             </div>
-                            <span className="font-heading font-bold text-xl">{APP_NAME}</span>
+                            <span className="font-heading font-bold text-xl">
+                                {siteSettings?.logo?.siteName || APP_NAME}
+                            </span>
                         </Link>
                         <p className="text-dark-400 mb-6 max-w-sm leading-relaxed">
                             We're a team of digital strategists, creative designers, and marketing experts dedicated to transforming your online presence.

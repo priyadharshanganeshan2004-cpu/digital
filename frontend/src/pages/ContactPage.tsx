@@ -30,7 +30,7 @@ export default function ContactPage() {
             const { data } = await api.get('/cms/settings');
             return data.data || {};
         },
-        staleTime: 5 * 60 * 1000,
+        staleTime: 0,
     });
     const contactInfo = [
         { icon: HiMail, label: 'Email', value: settings.contactEmail || 'priyadharshanganeshan2004@gmail.com', href: settings.contactEmail ? `mailto:${settings.contactEmail}` : 'mailto:priyadharshanganeshan2004@gmail.com' },

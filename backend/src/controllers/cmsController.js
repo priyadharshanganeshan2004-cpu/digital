@@ -43,6 +43,12 @@ const defaultSiteSettings = {
     { name: 'VivaNova', logo: '' },
     { name: 'BlueShift', logo: '' },
   ],
+  logo: {
+    text: 'N',
+    siteName: 'NexusDigital',
+    colorFrom: '#9333ea',
+    colorTo: '#4f46e5',
+  },
 };
 
 // Fields added after the initial schema deployment.
@@ -56,6 +62,7 @@ const MIGRATABLE_FIELDS = [
   'heroSecondaryCtaLink',
   'heroTrustedLabel',
   'heroTrustedBrands',
+  'logo',
 ];
 
 const cleanupDuplicateSettings = async () => {
@@ -210,6 +217,10 @@ const getServices = asyncHandler(async (req, res) => {
 });
 
 const getServicesPublic = asyncHandler(async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   const services = await Service.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
   res.json({ success: true, count: services.length, data: services });
 });
@@ -287,6 +298,10 @@ const getPricingPlans = asyncHandler(async (req, res) => {
 });
 
 const getPricingPlansPublic = asyncHandler(async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   const plans = await PricingPlan.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
   res.json({ success: true, count: plans.length, data: plans });
 });

@@ -13,7 +13,7 @@ export default function PricingPage() {
             const { data } = await api.get('/cms/settings');
             return data.data;
         },
-        staleTime: 5 * 60 * 1000,
+        staleTime: 0,
     });
     return (
         <>

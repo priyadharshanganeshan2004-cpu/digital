@@ -14,7 +14,7 @@ export default function PricingSection() {
             const { data } = await api.get('/cms/pricing');
             return data.data || [];
         },
-        staleTime: 5 * 60 * 1000,
+        staleTime: 0,
     });
 
     return (
@@ -56,8 +56,8 @@ export default function PricingSection() {
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.15 }}
                             className={`relative rounded-3xl p-8 ${plan.isPopular
-                                    ? 'bg-dark-900 text-white border-2 border-primary-500/30 shadow-2xl shadow-primary-500/10 scale-105 z-10'
-                                    : 'bg-white border border-gray-100 card-hover'
+                                ? 'bg-dark-900 text-white border-2 border-primary-500/30 shadow-2xl shadow-primary-500/10 scale-105 z-10'
+                                : 'bg-white border border-gray-100 card-hover'
                                 }`}
                         >
                             {plan.isPopular && (
@@ -108,8 +108,8 @@ export default function PricingSection() {
                             <Link
                                 to="/book-consultation"
                                 className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-sm transition-all duration-300 ${plan.isPopular
-                                        ? 'btn-primary'
-                                        : 'btn-secondary'
+                                    ? 'btn-primary'
+                                    : 'btn-secondary'
                                     }`}
                             >
                                 {plan.ctaText}

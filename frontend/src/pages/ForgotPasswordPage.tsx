@@ -8,10 +8,20 @@ import { HiMail } from 'react-icons/hi';
 import SEOHead from '@/components/ui/SEOHead';
 import { APP_NAME } from '@/lib/constants';
 import emailApi from '@/services/emailApi';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
 
 const schema = z.object({ email: z.string().email('Please enter a valid email') });
 
 export default function ForgotPasswordPage() {
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 0,
+    });
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [submittedEmail, setSubmittedEmail] = useState('');
     const [error, setError] = useState('');
@@ -30,14 +40,19 @@ export default function ForgotPasswordPage() {
 
     return (
         <>
-            <SEOHead title="Forgot Password" description="Reset your Scalax Labs password." canonical="/forgot-password" />
+            <SEOHead title="Forgot Password" description={`Reset your ${siteSettings?.siteName || APP_NAME} password.`} canonical="/forgot-password" />
             <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md bg-white rounded-3xl p-8 shadow-xl shadow-gray-100/50 border border-gray-100">
                     <Link to="/" className="flex items-center gap-2 mb-8 justify-center">
-                        <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center">
-                            <span className="text-white font-bold text-lg">N</span>
+                        <div
+                            className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md"
+                            style={{
+                                background: `linear-gradient(135deg, ${siteSettings?.logo?.colorFrom || '#9333ea'}, ${siteSettings?.logo?.colorTo || '#4f46e5'})`
+                            }}
+                        >
+                            <span className="text-white font-bold text-lg">{siteSettings?.logo?.text || 'N'}</span>
                         </div>
-                        <span className="font-heading font-bold text-xl text-dark-900">{APP_NAME}</span>
+                        <span className="font-heading font-bold text-xl text-dark-900">{siteSettings?.siteName || APP_NAME}</span>
                     </Link>
 
                     {isSubmitted ? (

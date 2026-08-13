@@ -57,6 +57,7 @@ export default function AdminBlog() {
       setForm(emptyForm);
       setEditingId(null);
       queryClient.invalidateQueries({ queryKey: ['admin-blog'] });
+      queryClient.invalidateQueries({ queryKey: ['cms-blog'] });
       alert('Blog post saved successfully');
     },
     onError: (error: any) => {
@@ -68,6 +69,7 @@ export default function AdminBlog() {
     mutationFn: async (id: string) => (await api.delete(`/admin/blog/${id}`)).data,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-blog'] });
+      queryClient.invalidateQueries({ queryKey: ['cms-blog'] });
       alert('Blog post deleted');
     },
   });

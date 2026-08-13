@@ -51,6 +51,7 @@ export default function AdminServices() {
       setForm(emptyForm);
       setEditingId(null);
       queryClient.invalidateQueries({ queryKey: ['admin-services'] });
+      queryClient.invalidateQueries({ queryKey: ['cms-services'] });
       alert('Service saved successfully');
     },
     onError: (error: any) => {
@@ -62,6 +63,7 @@ export default function AdminServices() {
     mutationFn: async (id: string) => (await api.delete(`/admin/services/${id}`)).data,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-services'] });
+      queryClient.invalidateQueries({ queryKey: ['cms-services'] });
       alert('Service deleted');
     },
   });

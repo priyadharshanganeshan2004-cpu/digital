@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HiMenu, HiX, HiChevronDown } from 'react-icons/hi';
 import { useAuth } from '@/contexts/AuthContext';
 import { NAV_LINKS, APP_NAME } from '@/lib/constants';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +13,16 @@ export default function Navbar() {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const { isAuthenticated, user } = useAuth();
     const location = useLocation();
+
+    // Fetch site settings for a dynamic, CMS-driven logo (badge & text)
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 0,
+    });
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -33,20 +45,27 @@ export default function Navbar() {
             animate={{ y: 0 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
-                    ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/[0.03] border-b border-gray-200/50'
-                    : 'bg-transparent'
+                ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/[0.03] border-b border-gray-200/50'
+                : 'bg-transparent'
                 }`}
         >
             <div className="container-custom">
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
                     <Link to="/" className="flex items-center gap-2 group">
-                        <div className="relative w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:shadow-primary-500/40 transition-shadow">
-                            <span className="text-white font-bold text-lg font-heading">N</span>
+                        <div
+                            className="relative w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300"
+                            style={{
+                                background: `linear-gradient(135deg, ${siteSettings?.logo?.colorFrom || '#9333ea'}, ${siteSettings?.logo?.colorTo || '#4f46e5'})`
+                            }}
+                        >
+                            <span className="text-white font-bold text-lg font-heading">
+                                {siteSettings?.logo?.text || 'N'}
+                            </span>
                             <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
                         <span className={`font-heading font-bold text-xl tracking-tight ${isScrolled ? 'text-dark-900' : 'text-dark-900'}`}>
-                            {APP_NAME}
+                            {siteSettings?.logo?.siteName || APP_NAME}
                         </span>
                     </Link>
 
@@ -62,8 +81,8 @@ export default function Navbar() {
                                 <Link
                                     to={link.href}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-1 ${location.pathname === link.href
-                                            ? 'text-primary-600 bg-primary-50'
-                                            : 'text-dark-600 hover:text-primary-600 hover:bg-gray-50'
+                                        ? 'text-primary-600 bg-primary-50'
+                                        : 'text-dark-600 hover:text-primary-600 hover:bg-gray-50'
                                         }`}
                                 >
                                     {link.label}
@@ -194,8 +213,8 @@ export default function Navbar() {
                                         <Link
                                             to={link.href}
                                             className={`block px-4 py-3 rounded-xl font-medium transition-colors ${location.pathname === link.href
-                                                    ? 'text-primary-600 bg-primary-50'
-                                                    : 'text-dark-700 hover:bg-gray-50'
+                                                ? 'text-primary-600 bg-primary-50'
+                                                : 'text-dark-700 hover:bg-gray-50'
                                                 }`}
                                         >
                                             {link.label}

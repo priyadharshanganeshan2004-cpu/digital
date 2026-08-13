@@ -59,6 +59,12 @@ const siteSettingsSchema = new mongoose.Schema(
         { name: 'BlueShift', logo: '' },
       ],
     },
+    logo: {
+      text: { type: String, default: 'N', maxlength: 3, trim: true },
+      siteName: { type: String, default: 'NexusDigital', trim: true },
+      colorFrom: { type: String, default: '#9333ea' },
+      colorTo: { type: String, default: '#4f46e5' },
+    },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }

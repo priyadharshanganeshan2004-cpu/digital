@@ -51,6 +51,7 @@ export default function AdminPricing() {
       setForm(emptyForm);
       setEditingId(null);
       queryClient.invalidateQueries({ queryKey: ['admin-pricing'] });
+      queryClient.invalidateQueries({ queryKey: ['cms-pricing'] });
       alert('Pricing plan saved successfully');
     },
     onError: (error: any) => {
@@ -62,6 +63,7 @@ export default function AdminPricing() {
     mutationFn: async (id: string) => (await api.delete(`/admin/pricing/${id}`)).data,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-pricing'] });
+      queryClient.invalidateQueries({ queryKey: ['cms-pricing'] });
       alert('Pricing plan deleted');
     },
   });

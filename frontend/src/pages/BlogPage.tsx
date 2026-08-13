@@ -19,7 +19,7 @@ export default function BlogPage() {
             const { data } = await api.get('/cms/blog');
             return data.data || [];
         },
-        staleTime: 5 * 60 * 1000,
+        staleTime: 0,
     });
 
     const filtered = blogPosts
@@ -68,8 +68,8 @@ export default function BlogPage() {
                                     key={cat}
                                     onClick={() => setActiveCategory(cat)}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeCategory === cat
-                                            ? 'gradient-bg text-white shadow-lg shadow-primary-500/20'
-                                            : 'bg-gray-100 text-dark-600 hover:bg-gray-200'
+                                        ? 'gradient-bg text-white shadow-lg shadow-primary-500/20'
+                                        : 'bg-gray-100 text-dark-600 hover:bg-gray-200'
                                         }`}
                                 >
                                     {cat}

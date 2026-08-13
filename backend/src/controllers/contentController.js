@@ -8,6 +8,10 @@ const getPortfolioItems = asyncHandler(async (req, res) => {
 });
 
 const getPortfolioItemsPublic = asyncHandler(async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   const items = await PortfolioItem.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
   res.json({ success: true, count: items.length, data: items });
 });
@@ -84,6 +88,10 @@ const getBlogPosts = asyncHandler(async (req, res) => {
 });
 
 const getBlogPostsPublic = asyncHandler(async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   const posts = await BlogPost.find({ isPublished: true }).sort({ sortOrder: 1, createdAt: -1 });
   res.json({ success: true, count: posts.length, data: posts });
 });
@@ -98,6 +106,10 @@ const getBlogPostById = asyncHandler(async (req, res) => {
 });
 
 const getBlogPostBySlug = asyncHandler(async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   const slug = req.params.slug;
   const post = await BlogPost.findOne({ slug, isPublished: true });
   if (!post) {

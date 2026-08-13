@@ -26,6 +26,15 @@ export default function ClientLayout() {
     const location = useLocation();
     const { user, logout } = useAuth();
 
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 0,
+    });
+
     // Query unread count for badge
     const { data: notificationsData } = useQuery({
         queryKey: ['notifications'],
@@ -45,10 +54,19 @@ export default function ClientLayout() {
                 <div className="flex flex-col h-full">
                     <div className="flex items-center justify-between p-5 border-b border-gray-100">
                         <Link to="/dashboard" className="flex items-center gap-2">
-                            <div className="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">N</span>
+                            <div
+                                className="w-9 h-9 rounded-lg flex items-center justify-center"
+                                style={{
+                                    background: `linear-gradient(135deg, ${siteSettings?.logo?.colorFrom || '#9333ea'}, ${siteSettings?.logo?.colorTo || '#4f46e5'})`
+                                }}
+                            >
+                                <span className="text-white font-bold text-sm">
+                                    {siteSettings?.logo?.text || 'N'}
+                                </span>
                             </div>
-                            <span className="font-heading font-bold text-dark-900">{APP_NAME}</span>
+                            <span className="font-heading font-bold text-dark-900">
+                                {siteSettings?.logo?.siteName || APP_NAME}
+                            </span>
                         </Link>
                         <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-dark-400">
                             <HiX className="w-5 h-5" />

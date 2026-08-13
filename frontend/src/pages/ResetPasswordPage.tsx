@@ -9,8 +9,17 @@ import SEOHead from '@/components/ui/SEOHead';
 import { APP_NAME } from '@/lib/constants';
 import emailApi from '@/services/emailApi';
 import api from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
 
 export default function ResetPasswordPage() {
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 0,
+    });
     const [showPassword, setShowPassword] = useState(false);
     const [isReset, setIsReset] = useState(false);
     const [error, setError] = useState('');
@@ -63,12 +72,19 @@ export default function ResetPasswordPage() {
 
     return (
         <>
-            <SEOHead title="Reset Password" description="Set a new password for your Scalax Labs account." canonical="/reset-password" />
+            <SEOHead title="Reset Password" description={`Set a new password for your ${siteSettings?.siteName || APP_NAME} account.`} canonical="/reset-password" />
             <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md bg-white rounded-3xl p-8 shadow-xl shadow-gray-100/50 border border-gray-100">
                     <Link to="/" className="flex items-center gap-2 mb-8 justify-center">
-                        <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center"><span className="text-white font-bold text-lg">N</span></div>
-                        <span className="font-heading font-bold text-xl text-dark-900">{APP_NAME}</span>
+                        <div
+                            className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md animate-gradient"
+                            style={{
+                                background: `linear-gradient(135deg, ${siteSettings?.logo?.colorFrom || '#9333ea'}, ${siteSettings?.logo?.colorTo || '#4f46e5'})`
+                            }}
+                        >
+                            <span className="text-white font-bold text-lg">{siteSettings?.logo?.text || 'N'}</span>
+                        </div>
+                        <span className="font-heading font-bold text-xl text-dark-900">{siteSettings?.siteName || APP_NAME}</span>
                     </Link>
 
                     {isReset ? (

@@ -46,6 +46,12 @@ const seedDefaultCMSData = async () => {
                 { name: 'VivaNova', logo: '' },
                 { name: 'BlueShift', logo: '' },
             ],
+            logo: {
+                text: 'N',
+                siteName: 'NexusDigital',
+                colorFrom: '#9333ea',
+                colorTo: '#4f46e5',
+            },
         });
     }
 

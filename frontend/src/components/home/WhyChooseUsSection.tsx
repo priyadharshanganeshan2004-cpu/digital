@@ -6,6 +6,8 @@ import {
     HiShieldCheck, HiLightningBolt, HiChartBar,
     HiUserGroup, HiClock, HiSupport,
 } from 'react-icons/hi';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
 
 function AnimatedCounter({ end, suffix = '', duration = 2 }: { end: number; suffix?: string; duration?: number }) {
     const [count, setCount] = useState(0);
@@ -62,6 +64,15 @@ const reasons = [
 ];
 
 export default function WhyChooseUsSection() {
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 0,
+    });
+
     return (
         <section className="section-padding bg-white relative overflow-hidden">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-50/50 rounded-full blur-[200px]" />
@@ -70,7 +81,7 @@ export default function WhyChooseUsSection() {
                 <SectionHeading
                     badge="Why Choose Us"
                     title="Why Brands Trust"
-                    highlight="Scalax Labs"
+                    highlight={siteSettings?.siteName || 'Scalax Labs'}
                     description="We don't just deliver services — we build partnerships that transform businesses and drive sustainable growth."
                 />
 

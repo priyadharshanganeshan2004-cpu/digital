@@ -9,6 +9,9 @@ import {
 } from 'react-icons/hi';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_NAME } from '@/lib/constants';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
+
 
 const sidebarLinks = [
     { label: 'Dashboard', icon: HiHome, href: '/admin' },
@@ -36,6 +39,15 @@ export default function AdminLayout() {
     const location = useLocation();
     const { user, logout } = useAuth();
 
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 0,
+    });
+
     return (
         <div className="min-h-screen bg-gray-50 flex">
             {/* Sidebar */}
@@ -44,10 +56,19 @@ export default function AdminLayout() {
                     {/* Logo */}
                     <div className="flex items-center justify-between p-5 border-b border-white/5">
                         <Link to="/admin" className="flex items-center gap-2">
-                            <div className="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">N</span>
+                            <div
+                                className="w-9 h-9 rounded-lg flex items-center justify-center"
+                                style={{
+                                    background: `linear-gradient(135deg, ${siteSettings?.logo?.colorFrom || '#9333ea'}, ${siteSettings?.logo?.colorTo || '#4f46e5'})`
+                                }}
+                            >
+                                <span className="text-white font-bold text-sm">
+                                    {siteSettings?.logo?.text || 'N'}
+                                </span>
                             </div>
-                            <span className="font-heading font-bold text-white">{APP_NAME}</span>
+                            <span className="font-heading font-bold text-white">
+                                {siteSettings?.logo?.siteName || APP_NAME}
+                            </span>
                         </Link>
                         <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-dark-400 hover:text-white">
                             <HiX className="w-5 h-5" />

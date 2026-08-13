@@ -51,6 +51,7 @@ export default function AdminPortfolio() {
       setForm(emptyForm);
       setEditingId(null);
       queryClient.invalidateQueries({ queryKey: ['admin-portfolio'] });
+      queryClient.invalidateQueries({ queryKey: ['cms-portfolio'] });
       alert('Portfolio item saved successfully');
     },
     onError: (error: any) => {
@@ -62,6 +63,7 @@ export default function AdminPortfolio() {
     mutationFn: async (id: string) => (await api.delete(`/admin/portfolio/${id}`)).data,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-portfolio'] });
+      queryClient.invalidateQueries({ queryKey: ['cms-portfolio'] });
       alert('Portfolio item deleted');
     },
   });

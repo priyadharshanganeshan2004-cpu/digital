@@ -9,6 +9,8 @@ import { FaGoogle, FaGithub } from 'react-icons/fa';
 import SEOHead from '@/components/ui/SEOHead';
 import { useAuth } from '@/contexts/AuthContext';
 import { APP_NAME } from '@/lib/constants';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
 
 const registerSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -25,6 +27,14 @@ const registerSchema = z.object({
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 0,
+    });
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const { register: registerUser } = useAuth();
@@ -51,11 +61,18 @@ export default function RegisterPage() {
 
     return (
         <>
-            <SEOHead title="Sign Up" description="Create your Scalax Labs account." canonical="/register" />
+            <SEOHead title="Sign Up" description={`Create your ${siteSettings?.siteName || APP_NAME} account.`} canonical="/register" />
 
             <div className="min-h-screen flex">
                 {/* Left Panel */}
-                <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-accent-600 via-primary-700 to-primary-800 relative overflow-hidden items-center justify-center p-12">
+                <div
+                    className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-accent-600 via-primary-700 to-primary-800 relative overflow-hidden items-center justify-center p-12"
+                    style={{
+                        background: siteSettings?.logo?.colorFrom && siteSettings?.logo?.colorTo
+                            ? `linear-gradient(135deg, ${siteSettings?.logo?.colorFrom}, ${siteSettings?.logo?.colorTo})`
+                            : undefined
+                    }}
+                >
                     <div className="absolute inset-0 opacity-10"
                         style={{
                             backgroundImage: `radial-gradient(circle at 70% 70%, white 1px, transparent 1px)`,
@@ -64,10 +81,15 @@ export default function RegisterPage() {
                     />
                     <div className="relative text-center max-w-md">
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                            <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center mx-auto mb-8 border border-white/20">
-                                <span className="text-white text-2xl font-heading font-bold">N</span>
+                            <div
+                                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-white/20 shadow-lg"
+                                style={{
+                                    background: `linear-gradient(135deg, ${siteSettings?.logo?.colorFrom || '#9333ea'}, ${siteSettings?.logo?.colorTo || '#4f46e5'})`
+                                }}
+                            >
+                                <span className="text-white text-2xl font-heading font-bold">{siteSettings?.logo?.text || 'N'}</span>
                             </div>
-                            <h2 className="text-3xl font-heading font-bold text-white mb-4">Join {APP_NAME}</h2>
+                            <h2 className="text-3xl font-heading font-bold text-white mb-4">Join {siteSettings?.siteName || APP_NAME}</h2>
                             <p className="text-white/60 leading-relaxed">
                                 Create your account to access project dashboards, real-time analytics, and collaborate with our expert team.
                             </p>
@@ -79,10 +101,15 @@ export default function RegisterPage() {
                 <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-white">
                     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="w-full max-w-md">
                         <Link to="/" className="flex items-center gap-2 mb-8 lg:hidden">
-                            <div className="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center">
-                                <span className="text-white font-bold text-lg">N</span>
+                            <div
+                                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md animate-gradient"
+                                style={{
+                                    background: `linear-gradient(135deg, ${siteSettings?.logo?.colorFrom || '#9333ea'}, ${siteSettings?.logo?.colorTo || '#4f46e5'})`
+                                }}
+                            >
+                                <span className="text-white font-bold text-lg">{siteSettings?.logo?.text || 'N'}</span>
                             </div>
-                            <span className="font-heading font-bold text-xl text-dark-900">{APP_NAME}</span>
+                            <span className="font-heading font-bold text-xl text-dark-900">{siteSettings?.siteName || APP_NAME}</span>
                         </Link>
 
                         <h1 className="text-2xl sm:text-3xl font-heading font-bold text-dark-900 mb-2">Create Account</h1>
