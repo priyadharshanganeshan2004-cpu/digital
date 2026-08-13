@@ -65,6 +65,28 @@ const siteSettingsSchema = new mongoose.Schema(
       colorFrom: { type: String, default: '#9333ea' },
       colorTo: { type: String, default: '#4f46e5' },
     },
+    aboutHeading: { type: String, default: 'We Build Digital Experiences That Matter' },
+    aboutDescription: {
+      type: String,
+      default: 'Founded in 2012, Scalax Labs has grown from a small team of passionate digital enthusiasts to a full-service agency serving 150+ clients worldwide.',
+    },
+    aboutStoryTitle: { type: String, default: 'Our Story' },
+    aboutStoryText1: {
+      type: String,
+      default: "What started as a passion project in a small garage has evolved into one of the most trusted digital marketing agencies in the industry. Our journey has been fueled by curiosity, innovation, and an unwavering commitment to our clients' success.",
+    },
+    aboutStoryText2: {
+      type: String,
+      default: "Over the past 12 years, we've delivered 500+ successful projects across various industries — from ambitious startups to Fortune 500 companies. We've built websites, designed brands, launched campaigns, and most importantly, created lasting partnerships.",
+    },
+    aboutStoryText3: {
+      type: String,
+      default: "Today, our team of 50+ experts continues to push boundaries, embracing new technologies and strategies to help businesses thrive in an ever-evolving digital landscape.",
+    },
+    aboutStatYears: { type: String, default: '12+' },
+    aboutStatProjects: { type: String, default: '500+' },
+    aboutStatClients: { type: String, default: '150+' },
+    aboutStatTeam: { type: String, default: '50+' },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }

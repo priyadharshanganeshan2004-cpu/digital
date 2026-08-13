@@ -4,6 +4,8 @@ import { HiArrowRight, HiUserGroup, HiLightBulb, HiHeart, HiGlobe } from 'react-
 import SectionHeading from '@/components/ui/SectionHeading';
 import SEOHead from '@/components/ui/SEOHead';
 import CTASection from '@/components/home/CTASection';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
 
 const values = [
     { icon: HiLightBulb, title: 'Innovation', desc: 'We push boundaries and embrace cutting-edge technologies to deliver forward-thinking solutions.' },
@@ -12,7 +14,7 @@ const values = [
     { icon: HiGlobe, title: 'Impact', desc: 'We measure success by the tangible impact we create for our clients\' businesses.' },
 ];
 
-const team = [
+const fallbackTeam = [
     { name: 'Alex Morgan', role: 'CEO & Founder', initials: 'AM' },
     { name: 'Jessica Lee', role: 'Creative Director', initials: 'JL' },
     { name: 'Ryan Patel', role: 'Head of Engineering', initials: 'RP' },
@@ -22,6 +24,25 @@ const team = [
 ];
 
 export default function AboutPage() {
+    const { data: siteSettings } = useQuery({
+        queryKey: ['cms-settings'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/settings');
+            return data.data;
+        },
+        staleTime: 0,
+    });
+
+    const { data: teamMembers } = useQuery({
+        queryKey: ['cms-team'],
+        queryFn: async () => {
+            const { data } = await api.get('/cms/team');
+            return data.data;
+        },
+        staleTime: 0,
+    });
+
+    const renderTeam = teamMembers && teamMembers.length > 0 ? teamMembers : fallbackTeam;
     return (
         <>
             <SEOHead
@@ -43,12 +64,16 @@ export default function AboutPage() {
                             About Us
                         </span>
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-dark-900 mb-6">
-                            We Build Digital{' '}
-                            <span className="gradient-text">Experiences</span>{' '}
-                            That Matter
+                            {siteSettings?.aboutHeading || (
+                                <>
+                                    We Build Digital{' '}
+                                    <span className="gradient-text">Experiences</span>{' '}
+                                    That Matter
+                                </>
+                            )}
                         </h1>
                         <p className="text-lg text-dark-500 leading-relaxed max-w-2xl">
-                            Founded in 2012, Scalax Labs has grown from a small team of passionate digital enthusiasts to a full-service agency serving 150+ clients worldwide.
+                            {siteSettings?.aboutDescription || 'Founded in 2012, Scalax Labs has grown from a small team of passionate digital enthusiasts to a full-service agency serving 150+ clients worldwide.'}
                         </p>
                     </motion.div>
                 </div>
@@ -64,17 +89,21 @@ export default function AboutPage() {
                             viewport={{ once: true }}
                         >
                             <h2 className="text-3xl sm:text-4xl font-heading font-bold text-dark-900 mb-6">
-                                Our <span className="gradient-text">Story</span>
+                                {siteSettings?.aboutStoryTitle || (
+                                    <>
+                                        Our <span className="gradient-text">Story</span>
+                                    </>
+                                )}
                             </h2>
                             <div className="space-y-4 text-dark-500 leading-relaxed">
                                 <p>
-                                    What started as a passion project in a small garage has evolved into one of the most trusted digital marketing agencies in the industry. Our journey has been fueled by curiosity, innovation, and an unwavering commitment to our clients' success.
+                                    {siteSettings?.aboutStoryText1 || "What started as a passion project in a small garage has evolved into one of the most trusted digital marketing agencies in the industry. Our journey has been fueled by curiosity, innovation, and an unwavering commitment to our clients' success."}
                                 </p>
                                 <p>
-                                    Over the past 12 years, we've delivered 500+ successful projects across various industries — from ambitious startups to Fortune 500 companies. We've built websites, designed brands, launched campaigns, and most importantly, created lasting partnerships.
+                                    {siteSettings?.aboutStoryText2 || "Over the past 12 years, we've delivered 500+ successful projects across various industries — from ambitious startups to Fortune 500 companies. We've built websites, designed brands, launched campaigns, and most importantly, created lasting partnerships."}
                                 </p>
                                 <p>
-                                    Today, our team of 50+ experts continues to push boundaries, embracing new technologies and strategies to help businesses thrive in an ever-evolving digital landscape.
+                                    {siteSettings?.aboutStoryText3 || "Today, our team of 50+ experts continues to push boundaries, embracing new technologies and strategies to help businesses thrive in an ever-evolving digital landscape."}
                                 </p>
                             </div>
                             <Link to="/portfolio" className="btn-primary mt-8">
@@ -91,22 +120,22 @@ export default function AboutPage() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-4">
                                     <div className="bg-primary-50 rounded-2xl p-8 text-center">
-                                        <div className="text-4xl font-heading font-bold gradient-text mb-1">12+</div>
+                                        <div className="text-4xl font-heading font-bold gradient-text mb-1">{siteSettings?.aboutStatYears || '12+'}</div>
                                         <div className="text-sm text-dark-500 font-medium">Years Experience</div>
                                     </div>
                                     <div className="bg-accent-50 rounded-2xl p-8 text-center">
-                                        <div className="text-4xl font-heading font-bold gradient-text mb-1">500+</div>
+                                        <div className="text-4xl font-heading font-bold gradient-text mb-1">{siteSettings?.aboutStatProjects || '500+'}</div>
                                         <div className="text-sm text-dark-500 font-medium">Projects Delivered</div>
                                     </div>
                                 </div>
                                 <div className="space-y-4 mt-8">
                                     <div className="bg-blue-50 rounded-2xl p-8 text-center">
-                                        <div className="text-4xl font-heading font-bold gradient-text mb-1">150+</div>
+                                        <div className="text-4xl font-heading font-bold gradient-text mb-1">{siteSettings?.aboutStatClients || '150+'}</div>
                                         <div className="text-sm text-dark-500 font-medium">Happy Clients</div>
                                     </div>
                                     <div className="bg-green-50 rounded-2xl p-8 text-center">
-                                        <div className="text-4xl font-heading font-bold gradient-text mb-1">50+</div>
-                                        <div className="text-sm text-dark-500 font-medium">Team Members</div>
+                                        <div className="text-4xl font-heading font-bold gradient-text mb-1">{siteSettings?.aboutStatTeam || '50+'}</div>
+                                        <div className="text-sm text-dark-500 font-medium font-heading">Team Members</div>
                                     </div>
                                 </div>
                             </div>
@@ -155,9 +184,9 @@ export default function AboutPage() {
                         description="A diverse team of creative thinkers, strategists, and tech wizards dedicated to your success."
                     />
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                        {team.map((member, i) => (
+                        {renderTeam.map((member: any, i: number) => (
                             <motion.div
-                                key={member.name}
+                                key={member._id || member.name}
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}

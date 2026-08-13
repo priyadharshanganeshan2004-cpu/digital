@@ -14,6 +14,7 @@ const connectDB = require('./config/db');
 const SiteSettings = require('./models/SiteSettings');
 const Service = require('./models/Service');
 const PricingPlan = require('./models/PricingPlan');
+const TeamMember = require('./models/TeamMember');
 
 const seedDefaultCMSData = async () => {
     const settingsCount = await SiteSettings.countDocuments();
@@ -71,6 +72,18 @@ const seedDefaultCMSData = async () => {
             { name: 'Starter', price: '$999', period: '/month', description: 'Perfect for small businesses getting started with digital marketing.', features: ['Basic Website Analytics', 'Social Media Management (2 platforms)', 'Monthly Content (4 posts)', 'Basic Analytics Report', 'Email Support'], ctaText: 'Get Started', isPopular: false, sortOrder: 1 },
             { name: 'Professional', price: '$2,499', period: '/month', description: 'Ideal for growing businesses looking to scale their online presence.', features: ['Advanced SEO Strategy', 'Social Media Management (4 platforms)', 'Weekly Content (8 posts)', 'Google Ads Management', 'Detailed Analytics Dashboard'], ctaText: 'Start Growing', isPopular: true, sortOrder: 2 },
             { name: 'Enterprise', price: '$4,999', period: '/month', description: 'Comprehensive solution for established brands demanding excellence.', features: ['Full-spectrum SEO', 'PPC Campaign Management', 'Influencer Marketing', 'Video Content Production', 'Dedicated Account Manager'], ctaText: 'Contact Sales', isPopular: false, sortOrder: 3 },
+        ]);
+    }
+
+    const teamCount = await TeamMember.countDocuments();
+    if (teamCount === 0) {
+        await TeamMember.insertMany([
+            { name: 'Alex Morgan', role: 'CEO & Founder', initials: 'AM', sortOrder: 1 },
+            { name: 'Jessica Lee', role: 'Creative Director', initials: 'JL', sortOrder: 2 },
+            { name: 'Ryan Patel', role: 'Head of Engineering', initials: 'RP', sortOrder: 3 },
+            { name: 'Sofia Chen', role: 'Marketing Director', initials: 'SC', sortOrder: 4 },
+            { name: 'Marcus Williams', role: 'SEO Strategist', initials: 'MW', sortOrder: 5 },
+            { name: 'Emma Davis', role: 'UI/UX Lead', initials: 'ED', sortOrder: 6 },
         ]);
     }
 };

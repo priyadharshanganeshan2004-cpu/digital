@@ -47,6 +47,7 @@ const AdminPortfolio = lazy(() => import('./pages/admin/AdminPortfolio'));
 const AdminBlog = lazy(() => import('./pages/admin/AdminBlog'));
 const AdminPricing = lazy(() => import('./pages/admin/AdminPricing'));
 const AdminEmailManagement = lazy(() => import('./pages/admin/AdminEmailManagement'));
+const AdminTeam = lazy(() => import('./pages/admin/AdminTeam'));
 
 // Client Dashboard Pages
 const ClientLayout = lazy(() => import('./pages/dashboard/ClientLayout'));
@@ -155,6 +156,7 @@ export default function App() {
               <Route path="messages" element={<AdminMessages />} />
               <Route path="newsletter" element={<AdminEmailManagement />} />
               <Route path="pricing" element={<AdminPricing />} />
+              <Route path="team" element={<AdminTeam />} />
               <Route path="analytics" element={<AdminDashboard />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>

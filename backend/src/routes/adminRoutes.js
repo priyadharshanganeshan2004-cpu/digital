@@ -20,6 +20,11 @@ const {
     createPricingPlan,
     updatePricingPlan,
     deletePricingPlan,
+    getTeamMembers,
+    getTeamMemberById,
+    createTeamMember,
+    updateTeamMember,
+    deleteTeamMember,
 } = require('../controllers/cmsController');
 const {
     getPortfolioItems,
@@ -87,5 +92,14 @@ router.route('/clients/:id')
     .get(getClientById)
     .put(updateClient)
     .delete(deleteClient);
+
+router.route('/team')
+    .get(getTeamMembers)
+    .post(createTeamMember);
+
+router.route('/team/:id')
+    .get(getTeamMemberById)
+    .put(updateTeamMember)
+    .delete(deleteTeamMember);
 
 module.exports = router;

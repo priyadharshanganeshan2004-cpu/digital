@@ -47,6 +47,17 @@ interface SettingsForm {
   heroTrustedBrands: TrustedBrand[];
   // Logo Settings
   logo: LogoSettings;
+  // About Page Settings
+  aboutHeading: string;
+  aboutDescription: string;
+  aboutStoryTitle: string;
+  aboutStoryText1: string;
+  aboutStoryText2: string;
+  aboutStoryText3: string;
+  aboutStatYears: string;
+  aboutStatProjects: string;
+  aboutStatClients: string;
+  aboutStatTeam: string;
 }
 
 const initialState: SettingsForm = {
@@ -84,6 +95,16 @@ const initialState: SettingsForm = {
     colorFrom: '#9333ea',
     colorTo: '#4f46e5',
   },
+  aboutHeading: 'We Build Digital Experiences That Matter',
+  aboutDescription: 'Founded in 2012, Scalax Labs has grown from a small team of passionate digital enthusiasts to a full-service agency serving 150+ clients worldwide.',
+  aboutStoryTitle: 'Our Story',
+  aboutStoryText1: "What started as a passion project in a small garage has evolved into one of the most trusted digital marketing agencies in the industry. Our journey has been fueled by curiosity, innovation, and an unwavering commitment to our clients' success.",
+  aboutStoryText2: "Over the past 12 years, we've delivered 500+ successful projects across various industries — from ambitious startups to Fortune 500 companies. We've built websites, designed brands, launched campaigns, and most importantly, created lasting partnerships.",
+  aboutStoryText3: "Today, our team of 50+ experts continues to push boundaries, embracing new technologies and strategies to help businesses thrive in an ever-evolving digital landscape.",
+  aboutStatYears: '12+',
+  aboutStatProjects: '500+',
+  aboutStatClients: '150+',
+  aboutStatTeam: '50+',
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -528,6 +549,137 @@ export default function AdminSettings() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ── About Page Content ─────────────────────────────── */}
+        <section className="bg-white rounded-2xl border border-gray-100 p-6 space-y-6">
+          <div>
+            <h3 className="text-lg font-heading font-semibold text-dark-900">About Page Content</h3>
+            <p className="text-sm text-dark-400 mt-1">Manage the narrative and stat elements shown on the /about page.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Heading */}
+            <label className={`${labelCls} md:col-span-2`}>
+              <span className={spanCls}>About Heading</span>
+              <input
+                id="about-heading"
+                value={form.aboutHeading}
+                onChange={(e) => handleChange('aboutHeading', e.target.value)}
+                className={inputCls}
+                placeholder="e.g. We Build Digital Experiences That Matter"
+              />
+            </label>
+
+            {/* Description */}
+            <label className={`${labelCls} md:col-span-2`}>
+              <span className={spanCls}>About Description</span>
+              <textarea
+                id="about-description"
+                rows={2}
+                value={form.aboutDescription}
+                onChange={(e) => handleChange('aboutDescription', e.target.value)}
+                className={inputCls}
+                placeholder="Brief introduction text displayed below the main heading."
+              />
+            </label>
+
+            {/* Story Title */}
+            <label className={`${labelCls} md:col-span-2`}>
+              <span className={spanCls}>Story Title</span>
+              <input
+                id="about-storyTitle"
+                value={form.aboutStoryTitle}
+                onChange={(e) => handleChange('aboutStoryTitle', e.target.value)}
+                className={inputCls}
+                placeholder="e.g. Our Story"
+              />
+            </label>
+
+            {/* Story Text 1 */}
+            <label className={`${labelCls} md:col-span-2`}>
+              <span className={spanCls}>Story Paragraph 1</span>
+              <textarea
+                id="about-storyText1"
+                rows={3}
+                value={form.aboutStoryText1}
+                onChange={(e) => handleChange('aboutStoryText1', e.target.value)}
+                className={inputCls}
+                placeholder="First paragraph of your storytelling component."
+              />
+            </label>
+
+            {/* Story Text 2 */}
+            <label className={`${labelCls} md:col-span-2`}>
+              <span className={spanCls}>Story Paragraph 2</span>
+              <textarea
+                id="about-storyText2"
+                rows={3}
+                value={form.aboutStoryText2}
+                onChange={(e) => handleChange('aboutStoryText2', e.target.value)}
+                className={inputCls}
+                placeholder="Second paragraph of your storytelling component."
+              />
+            </label>
+
+            {/* Story Text 3 */}
+            <label className={`${labelCls} md:col-span-2`}>
+              <span className={spanCls}>Story Paragraph 3</span>
+              <textarea
+                id="about-storyText3"
+                rows={3}
+                value={form.aboutStoryText3}
+                onChange={(e) => handleChange('aboutStoryText3', e.target.value)}
+                className={inputCls}
+                placeholder="Third paragraph of your storytelling component."
+              />
+            </label>
+
+            {/* Stats */}
+            <label className={labelCls}>
+              <span className={spanCls}>Years Experience Stat</span>
+              <input
+                id="about-statYears"
+                value={form.aboutStatYears}
+                onChange={(e) => handleChange('aboutStatYears', e.target.value)}
+                className={inputCls}
+                placeholder="e.g. 12+"
+              />
+            </label>
+
+            <label className={labelCls}>
+              <span className={spanCls}>Projects Delivered Stat</span>
+              <input
+                id="about-statProjects"
+                value={form.aboutStatProjects}
+                onChange={(e) => handleChange('aboutStatProjects', e.target.value)}
+                className={inputCls}
+                placeholder="e.g. 500+"
+              />
+            </label>
+
+            <label className={labelCls}>
+              <span className={spanCls}>Happy Clients Stat</span>
+              <input
+                id="about-statClients"
+                value={form.aboutStatClients}
+                onChange={(e) => handleChange('aboutStatClients', e.target.value)}
+                className={inputCls}
+                placeholder="e.g. 150+"
+              />
+            </label>
+
+            <label className={labelCls}>
+              <span className={spanCls}>Team Members Stat</span>
+              <input
+                id="about-statTeam"
+                value={form.aboutStatTeam}
+                onChange={(e) => handleChange('aboutStatTeam', e.target.value)}
+                className={inputCls}
+                placeholder="e.g. 50+"
+              />
+            </label>
           </div>
         </section>
 

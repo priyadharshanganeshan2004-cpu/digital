@@ -1,6 +1,7 @@
 ﻿const SiteSettings = require('../models/SiteSettings');
 const Service = require('../models/Service');
 const PricingPlan = require('../models/PricingPlan');
+const TeamMember = require('../models/TeamMember');
 const asyncHandler = require('../middleware/asyncHandler');
 
 const defaultSiteSettings = {
@@ -49,6 +50,16 @@ const defaultSiteSettings = {
     colorFrom: '#9333ea',
     colorTo: '#4f46e5',
   },
+  aboutHeading: 'We Build Digital Experiences That Matter',
+  aboutDescription: 'Founded in 2012, Scalax Labs has grown from a small team of passionate digital enthusiasts to a full-service agency serving 150+ clients worldwide.',
+  aboutStoryTitle: 'Our Story',
+  aboutStoryText1: "What started as a passion project in a small garage has evolved into one of the most trusted digital marketing agencies in the industry. Our journey has been fueled by curiosity, innovation, and an unwavering commitment to our clients' success.",
+  aboutStoryText2: "Over the past 12 years, we've delivered 500+ successful projects across various industries — from ambitious startups to Fortune 500 companies. We've built websites, designed brands, launched campaigns, and most importantly, created lasting partnerships.",
+  aboutStoryText3: "Today, our team of 50+ experts continues to push boundaries, embracing new technologies and strategies to help businesses thrive in an ever-evolving digital landscape.",
+  aboutStatYears: '12+',
+  aboutStatProjects: '500+',
+  aboutStatClients: '150+',
+  aboutStatTeam: '50+',
 };
 
 // Fields added after the initial schema deployment.
@@ -63,6 +74,16 @@ const MIGRATABLE_FIELDS = [
   'heroTrustedLabel',
   'heroTrustedBrands',
   'logo',
+  'aboutHeading',
+  'aboutDescription',
+  'aboutStoryTitle',
+  'aboutStoryText1',
+  'aboutStoryText2',
+  'aboutStoryText3',
+  'aboutStatYears',
+  'aboutStatProjects',
+  'aboutStatClients',
+  'aboutStatTeam',
 ];
 
 const cleanupDuplicateSettings = async () => {
@@ -366,6 +387,70 @@ const deletePricingPlan = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Pricing plan deleted successfully' });
 });
 
+// ── Team Member Controllers ──────────────────────────────────────────
+
+const getTeamMembersPublic = asyncHandler(async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+
+  const members = await TeamMember.find({}).sort({ sortOrder: 1, createdAt: 1 });
+  res.json({ success: true, count: members.length, data: members });
+});
+
+const getTeamMembers = asyncHandler(async (req, res) => {
+  const members = await TeamMember.find({}).sort({ sortOrder: 1, createdAt: 1 });
+  res.json({ success: true, count: members.length, data: members });
+});
+
+const getTeamMemberById = asyncHandler(async (req, res) => {
+  const member = await TeamMember.findById(req.params.id);
+  if (!member) {
+    res.status(404);
+    throw new Error('Team member not found');
+  }
+  res.json({ success: true, data: member });
+});
+
+const createTeamMember = asyncHandler(async (req, res) => {
+  const { name, role, initials, sortOrder } = req.body;
+  if (!name || !role || !initials) {
+    res.status(400);
+    throw new Error('Please provide name, role, and initials');
+  }
+  const member = await TeamMember.create({ name, role, initials, sortOrder });
+  res.status(201).json({ success: true, data: member, message: 'Team member created successfully' });
+});
+
+const updateTeamMember = asyncHandler(async (req, res) => {
+  const member = await TeamMember.findById(req.params.id);
+  if (!member) {
+    res.status(404);
+    throw new Error('Team member not found');
+  }
+
+  Object.keys(req.body || {}).forEach((key) => {
+    if (req.body[key] !== undefined) {
+      member[key] = req.body[key];
+    }
+  });
+
+  const updated = await member.save();
+  res.json({ success: true, data: updated, message: 'Team member updated successfully' });
+});
+
+const deleteTeamMember = asyncHandler(async (req, res) => {
+  const member = await TeamMember.findById(req.params.id);
+  if (!member) {
+    res.status(404);
+    throw new Error('Team member not found');
+  }
+
+  await member.deleteOne();
+  res.json({ success: true, message: 'Team member deleted successfully' });
+});
+
 module.exports = {
   getSiteSettings,
   getSiteSettingsPublic,
@@ -383,5 +468,11 @@ module.exports = {
   updatePricingPlan,
   deletePricingPlan,
   ensureSiteSettings,
+  getTeamMembersPublic,
+  getTeamMembers,
+  getTeamMemberById,
+  createTeamMember,
+  updateTeamMember,
+  deleteTeamMember,
 };
 
