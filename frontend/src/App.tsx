@@ -7,6 +7,8 @@ import { PageLoader } from './components/ui/Skeleton';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
 
 // Public Pages
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -104,6 +106,22 @@ function AdminPlaceholder() {
 
 export default function App() {
   const location = useLocation();
+
+  const { data: settings } = useQuery({
+    queryKey: ['cms-settings'],
+    queryFn: async () => {
+      const { data } = await api.get('/cms/settings');
+      return data.data;
+    },
+  });
+
+  useEffect(() => {
+    if (settings?.theme) {
+      document.documentElement.style.setProperty('--color-primary', settings.theme.primaryColor || '#9333ea');
+      document.documentElement.style.setProperty('--color-secondary', settings.theme.secondaryColor || '#4f46e5');
+      document.documentElement.style.setProperty('--color-accent-text', settings.theme.accentTextColor || '#9333ea');
+    }
+  }, [settings]);
 
   return (
     <ErrorBoundary>

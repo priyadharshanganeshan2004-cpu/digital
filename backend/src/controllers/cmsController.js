@@ -60,6 +60,11 @@ const defaultSiteSettings = {
   aboutStatProjects: '500+',
   aboutStatClients: '150+',
   aboutStatTeam: '50+',
+  theme: {
+    primaryColor: '#9333ea',
+    secondaryColor: '#4f46e5',
+    accentTextColor: '#9333ea',
+  },
 };
 
 // Fields added after the initial schema deployment.
@@ -84,6 +89,7 @@ const MIGRATABLE_FIELDS = [
   'aboutStatProjects',
   'aboutStatClients',
   'aboutStatTeam',
+  'theme',
 ];
 
 const cleanupDuplicateSettings = async () => {

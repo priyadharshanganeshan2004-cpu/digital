@@ -1,30 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --color-primary-50: #eef2ff;
-  --color-primary-100: #e0e7ff;
-  --color-primary-200: #c7d2fe;
-  --color-primary-300: #a5b4fc;
-  --color-primary-400: #818cf8;
-  --color-primary-500: #6366f1;
-  --color-primary-600: #4f46e5;
-  --color-primary-700: #4338ca;
-  --color-primary-800: #3730a3;
-  --color-primary-900: #312e81;
-  --color-primary-950: #1e1b4b;
+:root {
+  --color-primary: #9333ea;
+  --color-secondary: #4f46e5;
+  --color-accent-text: #9333ea;
+}
 
-  --color-accent-50: #faf5ff;
-  --color-accent-100: #f3e8ff;
-  --color-accent-200: #e9d5ff;
-  --color-accent-300: #d8b4fe;
-  --color-accent-400: #c084fc;
-  --color-accent-500: #a855f7;
-  --color-accent-600: #9333ea;
-  --color-accent-700: #7e22ce;
-  --color-accent-800: #6b21a8;
-  --color-accent-900: #581c87;
-  --color-accent-950: #3b0764;
+@theme {
+  --color-primary-50: color-mix(in srgb, var(--color-primary) 5%, white);
+  --color-primary-100: color-mix(in srgb, var(--color-primary) 10%, white);
+  --color-primary-200: color-mix(in srgb, var(--color-primary) 20%, white);
+  --color-primary-300: color-mix(in srgb, var(--color-primary) 30%, white);
+  --color-primary-400: color-mix(in srgb, var(--color-primary) 40%, white);
+  --color-primary-500: var(--color-primary);
+  --color-primary-600: color-mix(in srgb, var(--color-primary) 85%, black);
+  --color-primary-700: color-mix(in srgb, var(--color-primary) 75%, black);
+  --color-primary-800: color-mix(in srgb, var(--color-primary) 65%, black);
+  --color-primary-900: color-mix(in srgb, var(--color-primary) 50%, black);
+  --color-primary-950: color-mix(in srgb, var(--color-primary) 35%, black);
+
+  --color-accent-50: color-mix(in srgb, var(--color-secondary) 5%, white);
+  --color-accent-100: color-mix(in srgb, var(--color-secondary) 10%, white);
+  --color-accent-200: color-mix(in srgb, var(--color-secondary) 20%, white);
+  --color-accent-300: color-mix(in srgb, var(--color-secondary) 30%, white);
+  --color-accent-400: color-mix(in srgb, var(--color-secondary) 40%, white);
+  --color-accent-500: var(--color-secondary);
+  --color-accent-600: var(--color-accent-text);
+  --color-accent-700: color-mix(in srgb, var(--color-accent-text) 85%, black);
+  --color-accent-800: color-mix(in srgb, var(--color-accent-text) 75%, black);
+  --color-accent-900: color-mix(in srgb, var(--color-accent-text) 65%, black);
+  --color-accent-950: color-mix(in srgb, var(--color-accent-text) 50%, black);
 
   --color-dark-50: #f8fafc;
   --color-dark-100: #f1f5f9;

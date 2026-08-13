@@ -18,6 +18,12 @@ interface LogoSettings {
   colorTo: string;
 }
 
+interface ThemeSettings {
+  primaryColor: string;
+  secondaryColor: string;
+  accentTextColor: string;
+}
+
 interface SettingsForm {
   // General
   siteName: string;
@@ -58,6 +64,7 @@ interface SettingsForm {
   aboutStatProjects: string;
   aboutStatClients: string;
   aboutStatTeam: string;
+  theme: ThemeSettings;
 }
 
 const initialState: SettingsForm = {
@@ -105,6 +112,11 @@ const initialState: SettingsForm = {
   aboutStatProjects: '500+',
   aboutStatClients: '150+',
   aboutStatTeam: '50+',
+  theme: {
+    primaryColor: '#9333ea',
+    secondaryColor: '#4f46e5',
+    accentTextColor: '#9333ea',
+  },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -141,6 +153,7 @@ export default function AdminSettings() {
         ...initialState,
         ...data,
         logo: data.logo ? { ...initialState.logo, ...data.logo } : initialState.logo,
+        theme: data.theme ? { ...initialState.theme, ...data.theme } : initialState.theme,
         // Ensure heroTrustedBrands is always a clean array
         heroTrustedBrands:
           Array.isArray(data.heroTrustedBrands) && data.heroTrustedBrands.length > 0
@@ -184,6 +197,16 @@ export default function AdminSettings() {
       ...prev,
       logo: {
         ...prev.logo,
+        [key]: value,
+      },
+    }));
+  };
+
+  const handleThemeChange = (key: keyof ThemeSettings, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      theme: {
+        ...prev.theme,
         [key]: value,
       },
     }));
@@ -277,6 +300,134 @@ export default function AdminSettings() {
               <span className={spanCls}>Accent color</span>
               <input id="settings-accentColor" type="color" value={form.accentColor} onChange={(e) => handleChange('accentColor', e.target.value)} className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-2 py-2" />
             </label>
+          </div>
+        </section>
+
+        {/* ── Branding & Theme Colors ─────────────────────────── */}
+        <section className="bg-white rounded-2xl border border-gray-100 p-6 space-y-6">
+          <div>
+            <h3 className="text-base font-heading font-semibold text-dark-900">Branding & Theme Colors</h3>
+            <p className="text-sm text-dark-400 mt-1">Configure the global brand gradients and accent text colors used throughout the frontend.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <label className={labelCls}>
+              <span className={spanCls}>Primary Theme Color</span>
+              <div className="flex gap-2 items-center">
+                <input
+                  id="theme-primaryColor"
+                  type="color"
+                  value={form.theme?.primaryColor || '#9333ea'}
+                  onChange={(e) => handleThemeChange('primaryColor', e.target.value)}
+                  className="h-12 w-20 rounded-xl border border-gray-200 bg-gray-50 p-1 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={form.theme?.primaryColor || '#9333ea'}
+                  onChange={(e) => handleThemeChange('primaryColor', e.target.value)}
+                  className={inputCls}
+                  placeholder="#9333ea"
+                />
+              </div>
+            </label>
+
+            <label className={labelCls}>
+              <span className={spanCls}>Secondary Theme Color</span>
+              <div className="flex gap-2 items-center">
+                <input
+                  id="theme-secondaryColor"
+                  type="color"
+                  value={form.theme?.secondaryColor || '#4f46e5'}
+                  onChange={(e) => handleThemeChange('secondaryColor', e.target.value)}
+                  className="h-12 w-20 rounded-xl border border-gray-200 bg-gray-50 p-1 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={form.theme?.secondaryColor || '#4f46e5'}
+                  onChange={(e) => handleThemeChange('secondaryColor', e.target.value)}
+                  className={inputCls}
+                  placeholder="#4f46e5"
+                />
+              </div>
+            </label>
+
+            <label className={labelCls}>
+              <span className={spanCls}>Accent Text Color</span>
+              <div className="flex gap-2 items-center">
+                <input
+                  id="theme-accentTextColor"
+                  type="color"
+                  value={form.theme?.accentTextColor || '#9333ea'}
+                  onChange={(e) => handleThemeChange('accentTextColor', e.target.value)}
+                  className="h-12 w-20 rounded-xl border border-gray-200 bg-gray-50 p-1 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={form.theme?.accentTextColor || '#9333ea'}
+                  onChange={(e) => handleThemeChange('accentTextColor', e.target.value)}
+                  className={inputCls}
+                  placeholder="#9333ea"
+                />
+              </div>
+            </label>
+          </div>
+
+          {/* Live Preview Card */}
+          <div className="bg-gray-50 rounded-2xl p-5 border border-gray-200/50 space-y-4">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-dark-500">Live Preview</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center justify-items-center py-4 bg-white/70 backdrop-blur rounded-xl border border-white/50">
+
+              {/* Badge Preview */}
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[10px] text-dark-400 font-semibold uppercase tracking-wider">Badge</span>
+                <span
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border"
+                  style={{
+                    backgroundColor: `color-mix(in srgb, ${form.theme?.primaryColor || '#9333ea'} 10%, white)`,
+                    borderColor: `color-mix(in srgb, ${form.theme?.primaryColor || '#9333ea'} 20%, white)`,
+                    color: form.theme?.primaryColor || '#9333ea'
+                  }}
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: form.theme?.primaryColor || '#9333ea' }}
+                  />
+                  Live Badge Preview
+                </span>
+              </div>
+
+              {/* Gradient Text Preview */}
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[10px] text-dark-400 font-semibold uppercase tracking-wider">Gradient Text</span>
+                <span
+                  className="text-2xl font-bold font-heading"
+                  style={{
+                    background: `linear-gradient(135deg, ${form.theme?.primaryColor || '#9333ea'}, ${form.theme?.secondaryColor || '#4f46e5'})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  Scalax Labs
+                </span>
+              </div>
+
+              {/* Button Preview */}
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[10px] text-dark-400 font-semibold uppercase tracking-wider">Button</span>
+                <button
+                  type="button"
+                  className="px-5 py-2.5 rounded-xl text-xs font-semibold text-white transition-all shadow-md"
+                  style={{
+                    background: `linear-gradient(135deg, ${form.theme?.primaryColor || '#9333ea'}, ${form.theme?.secondaryColor || '#4f46e5'})`,
+                    boxShadow: `0 4px 12px color-mix(in srgb, ${form.theme?.primaryColor || '#9333ea'} 30%, transparent)`
+                  }}
+                >
+                  Action Button
+                </button>
+              </div>
+
+            </div>
           </div>
         </section>
 

@@ -87,6 +87,38 @@ const siteSettingsSchema = new mongoose.Schema(
     aboutStatProjects: { type: String, default: '500+' },
     aboutStatClients: { type: String, default: '150+' },
     aboutStatTeam: { type: String, default: '50+' },
+    theme: {
+      primaryColor: {
+        type: String,
+        default: '#9333ea',
+        validate: {
+          validator: function (v) {
+            return /^#([0-9A-Fa-f]{3}){1,2}$/.test(v);
+          },
+          message: props => `${props.value} is not a valid hex color!`
+        }
+      },
+      secondaryColor: {
+        type: String,
+        default: '#4f46e5',
+        validate: {
+          validator: function (v) {
+            return /^#([0-9A-Fa-f]{3}){1,2}$/.test(v);
+          },
+          message: props => `${props.value} is not a valid hex color!`
+        }
+      },
+      accentTextColor: {
+        type: String,
+        default: '#9333ea',
+        validate: {
+          validator: function (v) {
+            return /^#([0-9A-Fa-f]{3}){1,2}$/.test(v);
+          },
+          message: props => `${props.value} is not a valid hex color!`
+        }
+      },
+    },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }

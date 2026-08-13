@@ -92,6 +92,22 @@ export default function HeroSection({ settings, isLoading }: HeroSectionProps) {
 
         let animationId: number;
         const animate = () => {
+            const rootStyle = getComputedStyle(document.documentElement);
+            const primaryHex = rootStyle.getPropertyValue('--color-primary').trim() || '#9333ea';
+
+            const hexToRgb = (hex: string) => {
+                const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+                const fullHex = hex.replace(shorthandRegex, (_, r, g, b) => r + r + g + g + b + b);
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : { r: 99, g: 102, b: 241 };
+            };
+
+            const rgb = hexToRgb(primaryHex);
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach((p) => {
                 p.x += p.speedX;
@@ -103,7 +119,7 @@ export default function HeroSection({ settings, isLoading }: HeroSectionProps) {
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(99, 102, 241, ${p.opacity})`;
+                ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${p.opacity})`;
                 ctx.fill();
             });
 
@@ -114,7 +130,7 @@ export default function HeroSection({ settings, isLoading }: HeroSectionProps) {
                         ctx.beginPath();
                         ctx.moveTo(a.x, a.y);
                         ctx.lineTo(b.x, b.y);
-                        ctx.strokeStyle = `rgba(99, 102, 241, ${0.05 * (1 - dist / 150)})`;
+                        ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${0.05 * (1 - dist / 150)})`;
                         ctx.lineWidth = 0.5;
                         ctx.stroke();
                     }
@@ -174,7 +190,7 @@ export default function HeroSection({ settings, isLoading }: HeroSectionProps) {
             <div
                 className="absolute inset-0 opacity-[0.03]"
                 style={{
-                    backgroundImage: `linear-gradient(rgba(99,102,241,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.3) 1px, transparent 1px)`,
+                    backgroundImage: 'linear-gradient(color-mix(in srgb, var(--color-primary) 30%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 30%, transparent) 1px, transparent 1px)',
                     backgroundSize: '60px 60px',
                 }}
             />
