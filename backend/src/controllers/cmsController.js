@@ -59,7 +59,7 @@ const defaultSiteSettings = {
   aboutStatYears: '12+',
   aboutStatProjects: '500+',
   aboutStatClients: '150+',
-  aboutStatTeam: '50+',
+  aboutStatSatisfaction: '98%',
   theme: {
     primaryColor: '#9333ea',
     secondaryColor: '#4f46e5',
@@ -88,7 +88,7 @@ const MIGRATABLE_FIELDS = [
   'aboutStatYears',
   'aboutStatProjects',
   'aboutStatClients',
-  'aboutStatTeam',
+  'aboutStatSatisfaction',
   'theme',
 ];
 

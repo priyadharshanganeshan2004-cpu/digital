@@ -86,7 +86,7 @@ const siteSettingsSchema = new mongoose.Schema(
     aboutStatYears: { type: String, default: '12+' },
     aboutStatProjects: { type: String, default: '500+' },
     aboutStatClients: { type: String, default: '150+' },
-    aboutStatTeam: { type: String, default: '50+' },
+    aboutStatSatisfaction: { type: String, default: '98%' },
     theme: {
       primaryColor: {
         type: String,

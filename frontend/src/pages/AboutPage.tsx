@@ -134,8 +134,8 @@ export default function AboutPage() {
                                         <div className="text-sm text-dark-500 font-medium">Happy Clients</div>
                                     </div>
                                     <div className="bg-green-50 rounded-2xl p-8 text-center">
-                                        <div className="text-4xl font-heading font-bold gradient-text mb-1">{siteSettings?.aboutStatTeam || '50+'}</div>
-                                        <div className="text-sm text-dark-500 font-medium font-heading">Team Members</div>
+                                        <div className="text-4xl font-heading font-bold gradient-text mb-1">{siteSettings?.aboutStatSatisfaction || '98%'}</div>
+                                        <div className="text-sm text-dark-500 font-medium font-heading">Client Satisfaction</div>
                                     </div>
                                 </div>
                             </div>

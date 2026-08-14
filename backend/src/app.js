@@ -48,6 +48,8 @@ app.set('trust proxy', 1);
 //         (safety-net fallback, include production URL here too)
 //
 const allowedOriginPatterns = [
+    // ── Production custom domains (always allowed, no env-var dependency) ──
+    /^https:\/\/(www\.)?scalaxlab\.in$/i,
     // This project's Vercel preview deployments (scoped, not *.vercel.app)
     // Covers BOTH hash previews (digital-abc123-digital-797b.vercel.app)
     // AND branch previews  (digital-git-main-digital-797b.vercel.app)

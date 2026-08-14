@@ -52,8 +52,31 @@ export default function LoginPage() {
                 return;
             }
             navigate(user.role === 'admin' ? '/admin' : '/dashboard');
-        } catch {
-            setError('Invalid email or password. Please try again.');
+        } catch (err: unknown) {
+            // Distinguish auth errors from network/CORS/server errors
+            if (
+                err &&
+                typeof err === 'object' &&
+                'response' in err &&
+                (err as { response?: { status?: number } }).response
+            ) {
+                const status = (err as { response: { status: number } }).response.status;
+                if (status === 401) {
+                    setError('Invalid email or password. Please try again.');
+                } else if (status === 403) {
+                    const msg =
+                        (err as { response: { data?: { message?: string } } }).response.data
+                            ?.message || 'You are not authorized.';
+                    setError(msg);
+                } else if (status === 429) {
+                    setError('Too many login attempts. Please try again later.');
+                } else {
+                    setError('Something went wrong. Please try again later.');
+                }
+            } else {
+                // Network error, CORS block, or server unreachable
+                setError('Unable to connect to the server. Please check your connection and try again.');
+            }
         }
     };
 

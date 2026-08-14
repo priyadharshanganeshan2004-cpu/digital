@@ -1,6 +1,5 @@
 ﻿import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { STATS } from '@/lib/constants';
 import SectionHeading from '@/components/ui/SectionHeading';
 import {
     HiShieldCheck, HiLightningBolt, HiChartBar,
@@ -8,6 +7,15 @@ import {
 } from 'react-icons/hi';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
+
+const parseStat = (str: string | undefined, defaultVal: number, defaultSuffix: string) => {
+    if (!str) return { value: defaultVal, suffix: defaultSuffix };
+    const match = str.match(/^(\d+)(.*)$/);
+    if (match) {
+        return { value: parseInt(match[1], 10), suffix: match[2].trim() };
+    }
+    return { value: defaultVal, suffix: defaultSuffix };
+};
 
 function AnimatedCounter({ end, suffix = '', duration = 2 }: { end: number; suffix?: string; duration?: number }) {
     const [count, setCount] = useState(0);
@@ -30,38 +38,6 @@ function AnimatedCounter({ end, suffix = '', duration = 2 }: { end: number; suff
     return <span ref={ref}>{count}{suffix}</span>;
 }
 
-const reasons = [
-    {
-        icon: HiShieldCheck,
-        title: 'Proven Track Record',
-        desc: '500+ successful projects delivered with measurable results.',
-    },
-    {
-        icon: HiLightningBolt,
-        title: 'Cutting-Edge Tech',
-        desc: 'We stay ahead of the curve, implementing the latest tools and strategies.',
-    },
-    {
-        icon: HiChartBar,
-        title: 'Data-Driven Approach',
-        desc: 'Every decision is backed by analytics and real-time performance data.',
-    },
-    {
-        icon: HiUserGroup,
-        title: 'Dedicated Team',
-        desc: 'A team of 50+ experts committed to your brand\'s success.',
-    },
-    {
-        icon: HiClock,
-        title: 'On-Time Delivery',
-        desc: 'We respect deadlines and deliver projects on schedule, every time.',
-    },
-    {
-        icon: HiSupport,
-        title: '24/7 Support',
-        desc: 'Round-the-clock support to keep your digital assets running perfectly.',
-    },
-];
 
 export default function WhyChooseUsSection() {
     const { data: siteSettings } = useQuery({
@@ -72,6 +48,48 @@ export default function WhyChooseUsSection() {
         },
         staleTime: 0,
     });
+
+
+
+    const reasons = [
+        {
+            icon: HiShieldCheck,
+            title: 'Proven Track Record',
+            desc: `${siteSettings?.aboutStatProjects || '500+'} successful projects delivered with measurable results.`,
+        },
+        {
+            icon: HiLightningBolt,
+            title: 'Cutting-Edge Tech',
+            desc: 'We stay ahead of the curve, implementing the latest tools and strategies.',
+        },
+        {
+            icon: HiChartBar,
+            title: 'Data-Driven Approach',
+            desc: 'Every decision is backed by analytics and real-time performance data.',
+        },
+        {
+            icon: HiUserGroup,
+            title: 'Dedicated Team',
+            desc: `A team of ${siteSettings?.aboutStatTeam || '50+'} experts committed to your brand's success.`,
+        },
+        {
+            icon: HiClock,
+            title: 'On-Time Delivery',
+            desc: 'We respect deadlines and deliver projects on schedule, every time.',
+        },
+        {
+            icon: HiSupport,
+            title: '24/7 Support',
+            desc: 'Round-the-clock support to keep your digital assets running perfectly.',
+        },
+    ];
+
+    const dynamicStats = [
+        { ...parseStat(siteSettings?.aboutStatProjects, 500, '+'), label: 'Projects Completed' },
+        { ...parseStat(siteSettings?.aboutStatClients, 150, '+'), label: 'Happy Clients' },
+        { ...parseStat(siteSettings?.aboutStatSatisfaction, 98, '%'), label: 'Client Satisfaction' },
+        { ...parseStat(siteSettings?.aboutStatYears, 12, '+'), label: 'Years Experience' },
+    ];
 
     return (
         <section className="section-padding bg-white relative overflow-hidden">
@@ -92,7 +110,7 @@ export default function WhyChooseUsSection() {
                     viewport={{ once: true }}
                     className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
                 >
-                    {STATS.map((stat) => (
+                    {dynamicStats.map((stat) => (
                         <div
                             key={stat.label}
                             className="relative bg-white rounded-2xl p-8 text-center border border-gray-100 card-hover group"

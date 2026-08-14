@@ -63,7 +63,7 @@ interface SettingsForm {
   aboutStatYears: string;
   aboutStatProjects: string;
   aboutStatClients: string;
-  aboutStatTeam: string;
+  aboutStatSatisfaction: string;
   theme: ThemeSettings;
 }
 
@@ -111,7 +111,7 @@ const initialState: SettingsForm = {
   aboutStatYears: '12+',
   aboutStatProjects: '500+',
   aboutStatClients: '150+',
-  aboutStatTeam: '50+',
+  aboutStatSatisfaction: '98%',
   theme: {
     primaryColor: '#9333ea',
     secondaryColor: '#4f46e5',
@@ -822,13 +822,13 @@ export default function AdminSettings() {
             </label>
 
             <label className={labelCls}>
-              <span className={spanCls}>Team Members Stat</span>
+              <span className={spanCls}>Client Satisfaction Stat</span>
               <input
-                id="about-statTeam"
-                value={form.aboutStatTeam}
-                onChange={(e) => handleChange('aboutStatTeam', e.target.value)}
+                id="about-statSatisfaction"
+                value={form.aboutStatSatisfaction}
+                onChange={(e) => handleChange('aboutStatSatisfaction', e.target.value)}
                 className={inputCls}
-                placeholder="e.g. 50+"
+                placeholder="e.g. 98%"
               />
             </label>
           </div>
