@@ -7,6 +7,9 @@ import { AuthProvider } from './contexts/AuthContext';
 import App from './App';
 import './index.css';
 
+const DEPLOYMENT_VERSION = "2026-08-16-NEW";
+console.log("SCALAX DEPLOYMENT:", DEPLOYMENT_VERSION);
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
