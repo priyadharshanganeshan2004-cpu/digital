@@ -50,6 +50,7 @@ const AdminBlog = lazy(() => import('./pages/admin/AdminBlog'));
 const AdminPricing = lazy(() => import('./pages/admin/AdminPricing'));
 const AdminEmailManagement = lazy(() => import('./pages/admin/AdminEmailManagement'));
 const AdminTeam = lazy(() => import('./pages/admin/AdminTeam'));
+const AdminTestimonials = lazy(() => import('./pages/admin/AdminTestimonials'));
 
 // Client Dashboard Pages
 const ClientLayout = lazy(() => import('./pages/dashboard/ClientLayout'));
@@ -169,7 +170,7 @@ export default function App() {
               <Route path="services" element={<AdminServices />} />
               <Route path="portfolio" element={<AdminPortfolio />} />
               <Route path="blog" element={<AdminBlog />} />
-              <Route path="testimonials" element={<AdminPlaceholder />} />
+              <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="bookings" element={<AdminBookings />} />
               <Route path="messages" element={<AdminMessages />} />
               <Route path="newsletter" element={<AdminEmailManagement />} />

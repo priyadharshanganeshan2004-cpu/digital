@@ -39,6 +39,13 @@ const {
     deleteBlogPost,
 } = require('../controllers/contentController');
 
+const {
+    getAllTestimonials,
+    createTestimonial,
+    updateTestimonial,
+    deleteTestimonial,
+} = require('../controllers/testimonialController');
+
 const router = express.Router();
 
 // All routes require admin authentication
@@ -101,5 +108,13 @@ router.route('/team/:id')
     .get(getTeamMemberById)
     .put(updateTeamMember)
     .delete(deleteTeamMember);
+
+router.route('/testimonials')
+    .get(getAllTestimonials)
+    .post(createTestimonial);
+
+router.route('/testimonials/:id')
+    .put(updateTestimonial)
+    .delete(deleteTestimonial);
 
 module.exports = router;
