@@ -6,7 +6,9 @@ if (typeof dns.setDefaultResultOrder === 'function') {
     dns.setDefaultResultOrder('ipv4first');
 }
 
-const EMAIL_FROM = process.env.EMAIL_FROM || 'Scalax Labs <priyadharshanganeshan2004@gmail.com>';
+// Production: hrteam@scalaxlab.in (on verified domain scalaxlab.in)
+// Override via EMAIL_FROM env var in Render if needed.
+const EMAIL_FROM = process.env.EMAIL_FROM || 'Scalax Labs <hrteam@scalaxlab.in>';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const SMTP_HOST = process.env.SMTP_HOST || '';
 const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
@@ -79,7 +81,9 @@ const sendViaResend = async ({ to, subject, html, text, replyTo, from = EMAIL_FR
 
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-        throw new Error(data?.message || 'Resend request failed');
+        // Log detailed error server-side only — never expose to the frontend
+        console.error('[email/resend] delivery failed:', response.status, data?.message || data);
+        throw new Error('Email delivery failed. Please try again later.');
     }
 
     return data;
